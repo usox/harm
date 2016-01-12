@@ -1,0 +1,11 @@
+class=Sample
+table=sample
+namespace=Test\ORM
+key=id
+
+attribute=integer_field:int
+attribute=int2_field:int2
+attribute=float_field:float
+attribute=text_field:text
+attribute=date_field:timestamp
+attribute=remote_addr_field:inet

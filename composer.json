@@ -1,0 +1,29 @@
+{
+    "name": "usox/harm",
+    "type": "library",
+    "description": "Active record/table data gateway hybrid for hack strict mode",
+    "keywords": ["hack", "orm"],
+    "license": "MIT",
+    "bin": ["bin/harmgen"],
+    "homepage": "https://github.com/usox/harm",
+    "authors": [
+        {
+            "name": "Daniel Jakob",
+            "email": "dev@usox.org",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+    	"hhvm": ">=3.6",
+	"usox/hadb": "0.3"
+    },
+    "require-dev": {
+	"phpunit/phpunit": "5.*"
+    },
+    "autoload": {
+        "psr-4": {
+		"Usox\\HaRm\\": "src/",
+		"Usox\\HaRm\\Test\\": "tests/"
+	}
+    }
+}
