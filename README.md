@@ -18,7 +18,7 @@ Usage
 
 - Create a .harm file containing the database structure (see `tests/sample.harm` for a
 boilerplate).
-- Generate interface `./bin/harmgen interface <path_to_your_pobj_file> > MyTableInterface.hh`
-- Generate table `./bin/harmgen table <path_to_your_pobj_file> > MyTable.hh`
+- Generate interface `./bin/harmgen interface <path_to_your_harm_file> > MyTableInterface.hh`
+- Generate table `./bin/harmgen table <path_to_your_harm_file> > MyTable.hh`
 
 See the generated interface for further information.

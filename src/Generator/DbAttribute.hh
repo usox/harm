@@ -1,6 +1,8 @@
 <?hh // strict
 namespace Usox\HaRm\Generator;
 
+use Facebook\HackCodegen as codegen;
+
 final class DbAttribute {
 
 	private ?string $accessor_name;
@@ -19,18 +21,21 @@ final class DbAttribute {
 		return $this->accessor_name;	
 	}
 
-	public function getDefaultValue(): string {
+	public function setDefaultValue(codegen\CodegenMemberVar $member_var): void {
 		switch ($this->type) {
 			case 'int':
 			case 'int2':
 			case 'timestamp':
-				return '0';
+				$member_var->setValue(0);
+				return;
 			case 'float':
-				return '0.00';
+				$member_var->setLiteralValue('0.00');
+				return;
 			case 'text':
 			case 'numeric':
 			default:
-				return '\'\'';
+				$member_var->setValue('');
+				return;
 		}
 	}
 
@@ -40,7 +45,6 @@ final class DbAttribute {
 			case 'int2':
 			case 'timestamp':
 			case 'float':
-			case 'text':
 			case 'numeric':
 				return '(string) '.$attribute;
 			default:
@@ -92,72 +96,6 @@ final class DbAttribute {
 		default:
 			return $this->name;
 		}
-	}
-
-
-	public function writeAccessors(): void {
-		$accessor_name = $this->getAccessorName();
-
-		printf('
-	public function get%s(): %s {
-		return $this->%s;
-	}
-',
-			$this->accessor_name,
-			$this->getReadCast(),
-			$this->name
-		);
-
-		printf('
-
-	public function set%s(%s $value): void {
-		$this->tagDirty(\'%s\');
-		$this->%s = $value;
-	}
-
-',
-			$this->accessor_name,
-			$this->getWriteTypeHint(),
-			$this->name,
-			$this->name
-		);
-	}
-
-	public function writeInterfaceDeclaration(): void {
-		printf('
-	public function get%s(): %s;
-',
-			$this->getAccessorName(),
-			$this->getReadCast()
-		);
-
-		printf('
-	public function set%s(%s $value): void;
-',
-			$this->getAccessorName(),
-			$this->getReadCast()
-		);
-	}
-
-	public function writeDeclaration(): void {
-		printf(
-			'%sprivate %s $%s = %s;%s',
-			"\t",
-			$this->getWriteTypeHint(),
-			$this->name,
-			$this->getDefaultValue(),
-			PHP_EOL
-		);
-	}
-
-	public function writeDataInitialization(): void {
-		printf('%s$this->set%s((%s) $data[\'%s\']);%s',
-			"\t\t",
-			$this->getAccessorName(),
-			$this->getWriteTypeHint(),
-			$this->name,
-			PHP_EOL
-	      );
 	}
 
 	public function getName(): string {
