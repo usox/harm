@@ -2,51 +2,94 @@
 namespace Usox\HaRm\Writer;
 
 use Usox\HaRm\Generator\HarmGenerator;
+use Facebook\HackCodegen as codegen;
 
 final class InterfaceWriter {
 
-	private string $tab = "\t";
-	private string $eol = PHP_EOL;
+	private codegen\CodegenFile $file;
+	private codegen\CodegenInterface $class;
 
-	public function __construct(private HarmGenerator $pobj): void {
-	}
+	public function __construct(private HarmGenerator $harm): void {
+		$this->file = codegen\codegen_file(
+				sprintf('%sInterface.hh', $this->harm->getClassName())
+			)
+			->setIsStrict(true)
+			->setNamespace($this->harm->getNamespaceName());
 
-	public function writeOut(): void {
-		$this->writeHeader();
-		$this->writeDeclarations();
-		$this->writeFooter();
-	}
-
-	private function writeDeclarations(): void {
-		$classname = $this->pobj->getClassName();
-
-		printf('%spublic function delete(): void;%s', $this->tab, $this->eol);
-		printf('%spublic function save(): void;%s', $this->tab, $this->eol);
-		printf('%spublic function loadDataByDatabaseResult(array<string, ?string>$result): void;%s', $this->tab, $this->eol);
-		printf('%spublic function getTableName(): string;%s', $this->tab, $this->eol);
-		printf('%spublic function getId(): int;%s', $this->tab, $this->eol);
-		printf('%spublic function count(?string $where = null): int;%s', $this->tab, $this->eol);
-		printf('%spublic function exists(?string $where = null): bool;%s', $this->tab, $this->eol);
-		printf('%spublic function findObject(?string $condition = null): %sInterface;%s', $this->tab, $classname, $this->eol);
-		printf('%spublic function getObjectsBy(?string $condition = null, ?string $order = null, ?string $addendum = null): Vector<%sInterface>;%s', $this->tab, $classname, $this->eol);
-		printf('%spublic function getById(int $id): ?%sInterface;%s', $this->tab, $classname, $this->eol);
-		foreach ($this->pobj->getAttributes() as $attribute) {
-			$attribute->writeInterfaceDeclaration();
-		}
-	}
-
-	private function writeHeader(): void {
-		$tab = "\t";
-		printf('<?hh // strict%s', PHP_EOL);
-		printf('namespace %s;%s', $this->pobj->getNamespaceName(), PHP_EOL);
-		printf(
-			'interface %sInterface {%s',
-			$this->pobj->getClassName(),
-			PHP_EOL
+		$this->class = codegen\codegen_interface(
+			sprintf('%sInterface', $this->harm->getClassName())
 		);
 	}
 
-	private function writeFooter(): void {
-		printf('}');
+	public function writeOut(): void {
+		$classname = $this->harm->getClassName();
+
+		$this->class->addMethod(
+			codegen\codegen_method('delete')->setReturnType('void')
+		);
+		$this->class->addMethod(
+			codegen\codegen_method('save')->setReturnType('void')
+		);
+		$this->class->addMethod(
+			codegen\codegen_method('loadDataByDatabaseResult')
+			->addParameter('array<string, ?string> $result')
+			->setReturnType('void')
+		);
+		$this->class->addMethod(
+			codegen\codegen_method('getTableName')->setReturnType('string')
+		);
+		$this->class->addMethod(
+			codegen\codegen_method('getId')->setReturnType('int')
+		);
+		$this->class->addMethod(
+			codegen\codegen_method('count')
+			->addParameter('?string $where = null')
+			->setReturnType('int')
+		);
+		$this->class->addMethod(
+			codegen\codegen_method('exists')
+			->addParameter('?string $where = null')
+			->setReturnType('bool')
+		);
+		$this->class->addMethod(
+			codegen\codegen_method('findObject')
+			->addParameter('?string $condition = null')
+			->setReturnType(
+				sprintf('%sInterface', $classname)
+			)
+		);
+		$this->class->addMethod(
+			codegen\codegen_method('getObjectsBy')
+			->addParameter('?string $condition = null')
+			->addParameter('?string $order = null')
+			->addParameter('?string $addendum = null')
+			->setReturnType(
+				sprintf('Vector<%sInterface>', $classname)
+			)
+		);
+		$this->class->addMethod(
+			codegen\codegen_method('getById')
+			->addParameter('int $id')
+			->setReturnType(
+				sprintf('?%sInterface', $classname)
+			)
+		);
+		foreach ($this->harm->getAttributes() as $attribute) {
+			$readcast = $attribute->getReadCast();
+			$accessor_name = $attribute->getAccessorName();
+
+			$this->class->addMethod(
+				codegen\codegen_method(sprintf('get%s', $accessor_name))
+				->setReturnType($readcast)
+			);
+			$this->class->addMethod(
+				codegen\codegen_method(sprintf('set%s', $accessor_name))
+				->addParameter(sprintf('%s $value', $readcast))
+				->setReturnType('void')
+			);
+		}
+		
+		$this->file->addClass($this->class);
+		echo $this->file->render();
 	}
 }
