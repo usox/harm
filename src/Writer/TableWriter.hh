@@ -26,7 +26,7 @@ final class TableWriter {
 				)
 			)
 			->addVar(
-				codegen\codegen_member_var($this->harm->getKeyName())
+				codegen\codegen_member_var($this->harm->getPrimaryKeyName())
 				->setType('int')
 				->setValue(0)
 			)
@@ -94,7 +94,7 @@ final class TableWriter {
 	}
 
 	private function writeInsert(): void {
-		$keyname = $this->harm->getKeyName();
+		$keyname = $this->harm->getPrimaryKeyName();
 
 		$this->class->addMethod(
 			codegen\codegen_method('insert')
@@ -134,7 +134,7 @@ final class TableWriter {
 				sprintf(
 					'$this->database->query(\'UPDATE %s SET \'.implode(\', \', $attribute_cast_list).\' WHERE %s = \'.$this->getId());',
 					$this->harm->getTableName(),
-					$this->harm->getKeyName(),
+					$this->harm->getPrimaryKeyName(),
 				)
 			)
 		);
@@ -167,7 +167,7 @@ final class TableWriter {
 
 	private function writeGetById(): void {
 		$attribute_list = Vector{};
-		$attribute_list[] = $this->harm->getKeyName();
+		$attribute_list[] = $this->harm->getPrimaryKeyName();
 		foreach ($this->harm->getAttributes() as $attribute) {
 			$attribute_list[] = $attribute->getDBReadCast();
 		}
@@ -182,7 +182,7 @@ final class TableWriter {
 					'$query = \'SELECT %s FROM %s WHERE %s = \'.$id;',
 					implode(',', $attribute_list),
 					$this->harm->getTableName(),
-					$this->harm->getKeyName(),
+					$this->harm->getPrimaryKeyName(),
 				),
 				'$object = new self($this->database);',
 				'$data = $this->database->getNextResult($this->database->query($query));',
@@ -198,7 +198,7 @@ final class TableWriter {
 	private function writeGetObjectsBy(): void {
 
 		$attribute_list = Vector{};
-		$attribute_list[] = $this->harm->getKeyName();
+		$attribute_list[] = $this->harm->getPrimaryKeyName();
 		foreach ($this->harm->getAttributes() as $attribute) {
 			$attribute_list[] = $attribute->getDBReadCast();
 		}
@@ -251,7 +251,7 @@ final class TableWriter {
 			->setBody(
 				"%s\n%s",
 				'$condition !== null ? $condition = sprintf(\'WHERE %s\', $condition) : $condition = \'\';',
-				sprintf('return $this->database->count(sprintf(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $condition));', $this->harm->getKeyName()),
+				sprintf('return $this->database->count(sprintf(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $condition));', $this->harm->getPrimaryKeyName()),
 			)
 		);
 	}
@@ -277,7 +277,7 @@ final class TableWriter {
 				sprintf(
 					'$this->database->query(\'DELETE FROM %s WHERE %s = \'.$this->getId());',
 					$this->harm->getTableName(),
-					$this->harm->getKeyName()
+					$this->harm->getPrimaryKeyName()
 				)
 			)
 		);
@@ -285,7 +285,7 @@ final class TableWriter {
 
 	private function writeAttributeAccessors(): void {
 		$attributes = $this->harm->getAttributes();
-		$attributes->add(new DbAttribute($this->harm->getKeyName(), 'int'));
+		$attributes->add(new DbAttribute($this->harm->getPrimaryKeyName(), 'int'));
 		foreach ($attributes as $attribute) {
 			$accessor_name = $attribute->getAccessorName();
 			$attribute_name = $attribute->getName();
@@ -353,7 +353,7 @@ final class TableWriter {
 	}
 
 	private function writeLoadDataByDatabaseResult(): void {
-		$keyname = $this->harm->getKeyName();
+		$keyname = $this->harm->getPrimaryKeyName();
 		$body = '';
 
 		foreach ($this->harm->getAttributes() as $attribute) {
