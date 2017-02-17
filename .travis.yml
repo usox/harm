@@ -2,6 +2,6 @@ language: php
 php:
   - hhvm
 
-before_script: hhvm composer install
+before_script: composer install
 
 script: phpunit -c phpunit.xml
