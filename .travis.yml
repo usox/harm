@@ -1,0 +1,7 @@
+language: php
+php:
+  - hhvm
+
+before_script: hhvm composer install
+
+script: hhvm phpunit -c phpunit.xml
