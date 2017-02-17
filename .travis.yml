@@ -4,4 +4,4 @@ php:
 
 before_script: hhvm composer install
 
-script: hhvm phpunit -c phpunit.xml
+script: phpunit -c phpunit.xml
