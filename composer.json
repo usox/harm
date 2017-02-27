@@ -15,7 +15,7 @@
     ],
     "require": {
     	"hhvm": ">=3.6",
-	"usox/hadb": "^0",
+	"usox/hadb": "^1.0",
         "facebook/hack-codegen": "^1.1"
     },
     "require-dev": {
