@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/usox/harm.svg?branch=master)](https://travis-ci.org/usox/harm)
+
 HaRM - Hack Relation Mapper
 ===========================
 
