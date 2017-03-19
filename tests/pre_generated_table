@@ -1,0 +1,239 @@
+<?hh // strict
+/**
+ * This file is generated. Do not modify it manually!
+ *
+ * @generated SignedSource<<88ab1855a6d477bd2f84ebfcbb8ca80e>>
+ */
+namespace Test\ORM;
+use Usox\HaDb\DatabaseInterface;
+
+final class Sample
+  implements
+    SampleInterface {
+
+  private int $id = 0;
+  private bool $data_loaded = false;
+  private bool $modified = false;
+  private Map<string, bool> $dirty;
+  private int $integer_field = 0;
+  private int $int2_field = 0;
+  private float $float_field = 0.00;
+  private string $text_field = '';
+  private int $date_field = 0;
+  private string $remote_addr_field = '';
+
+  public function __construct(private DatabaseInterface $database): void {
+    $this->startDirtyTagging();
+  }
+
+  public function isNew(): bool {
+    return $this->data_loaded !== true;
+  }
+
+  public function loadDataByDatabaseResult(array<string, ?string> $data): void {
+    $this->data_loaded = true;
+    $this->modified = false;
+    $this->id = (int) $data['id'];
+    $this->setIntegerField((int) $data['integer_field']);
+    $this->setInt2Field((int) $data['int2_field']);
+    $this->setFloatField((float) $data['float_field']);
+    $this->setTextField((string) $data['text_field']);
+    $this->setDateField((int) $data['date_field']);
+    $this->setRemoteAddrField((string) $data['remote_addr_field']);
+
+    $this->startDirtyTagging();
+  }
+
+  public function save(): void {
+    if ($this->isNew()) {
+    	$this->insert();
+    } else {
+    	$this->update();
+    }
+  }
+
+  public function getTableName(): string {
+    return 'sample';
+  }
+
+  public function getIntegerField(): int {
+    return $this->integer_field;
+  }
+
+  public function setIntegerField(int $value): void {
+    $this->tagDirty('integer_field');
+    $this->integer_field = $value;
+  }
+
+  public function getInt2Field(): int {
+    return $this->int2_field;
+  }
+
+  public function setInt2Field(int $value): void {
+    $this->tagDirty('int2_field');
+    $this->int2_field = $value;
+  }
+
+  public function getFloatField(): float {
+    return $this->float_field;
+  }
+
+  public function setFloatField(float $value): void {
+    $this->tagDirty('float_field');
+    $this->float_field = $value;
+  }
+
+  public function getTextField(): string {
+    return $this->text_field;
+  }
+
+  public function setTextField(string $value): void {
+    $this->tagDirty('text_field');
+    $this->text_field = $value;
+  }
+
+  public function getDateField(): int {
+    return $this->date_field;
+  }
+
+  public function setDateField(int $value): void {
+    $this->tagDirty('date_field');
+    $this->date_field = $value;
+  }
+
+  public function getRemoteAddrField(): string {
+    return $this->remote_addr_field;
+  }
+
+  public function setRemoteAddrField(string $value): void {
+    $this->tagDirty('remote_addr_field');
+    $this->remote_addr_field = $value;
+  }
+
+  public function getId(): int {
+    return $this->id;
+  }
+
+  public function setId(int $value): void {
+    $this->tagDirty('id');
+    $this->id = $value;
+  }
+
+  public function delete(): void {
+    $this->database->query('DELETE FROM sample WHERE id = '.$this->getId());
+  }
+
+  public function count(?string $condition = null): int {
+    $condition !== null ? $condition = sprintf('WHERE %s', $condition) : $condition = '';
+    return $this->database->count(sprintf('SELECT COUNT(id) as count FROM %s %s', $this->getTableName(), $condition));
+  }
+
+  public function exists(?string $condition = null): bool {
+    $condition !== null ? $condition = sprintf('WHERE %s', $condition) : $condition = '';
+    return $this->database->exists(sprintf('SELECT 1 FROM %s %s', $this->getTableName(), $condition));
+  }
+
+  public function findObject(?string $condition = null): SampleInterface {
+    $iterator = $this->getObjectsBy($condition, null, 'LIMIT 1');
+    if ($iterator->count() === 0) {
+    	throw new \Usox\HaRm\Exception\ObjectNotFoundException();
+    }
+    return $iterator->items()->getIterator()->current();
+  }
+
+  public function getObjectsBy(
+    ?string $condition = null,
+    ?string $order = null,
+    ?string $addendum = null,
+  ): Vector<SampleInterface> {
+    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,EXTRACT( EPOCH FROM date_field) AS date_field,remote_addr_field,id FROM sample';
+    if ($condition !== null) $query .= ' WHERE '.$condition;
+    if ($order !== null) $query .= ' ORDER BY '.$order;
+    if ($addendum !== null) $query .= ' '.$addendum;
+    $query_result = $this->database->query($query);
+    $results = Vector{};
+    while ($result = $this->database->getNextResult($query_result)) {
+    	$obj = new self($this->database);
+    	$obj->loadDataByDatabaseResult($result);
+    	$results->add($obj);
+    }
+    return $results;
+  }
+
+  public function getById(int $id): ?SampleInterface {
+    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,EXTRACT( EPOCH FROM date_field) AS date_field,remote_addr_field,id FROM sample WHERE id = '.$id;
+    $object = new self($this->database);
+    $data = $this->database->getNextResult($this->database->query($query));
+    if ($data === null) {
+    	return null;
+    }
+    $object->loadDataByDatabaseResult($data);
+    return $object;
+  }
+
+  private function getDirtyForWrite(): Map<string, string> {
+    $attributes = Map{};
+    if ($this->isDirty('integer_field')) {
+    	$attributes['integer_field'] = $this->integer_field === null ? 'null' : (string) $this->integer_field.'';
+    }
+    if ($this->isDirty('int2_field')) {
+    	$attributes['int2_field'] = $this->int2_field === null ? 'null' : (string) $this->int2_field.'';
+    }
+    if ($this->isDirty('float_field')) {
+    	$attributes['float_field'] = $this->float_field === null ? 'null' : (string) $this->float_field.'';
+    }
+    if ($this->isDirty('text_field')) {
+    	$attributes['text_field'] = $this->text_field === null ? 'null' : $this->database->quote($this->text_field).'';
+    }
+    if ($this->isDirty('date_field')) {
+    	$attributes['date_field'] = $this->date_field === null ? 'null' : (string) $this->date_field.'::int4::abstime::timestamp';
+    }
+    if ($this->isDirty('remote_addr_field')) {
+    	$attributes['remote_addr_field'] = $this->remote_addr_field === null ? 'null' : $this->database->quote($this->remote_addr_field).'';
+    }
+    if ($this->isDirty('id')) {
+    	$attributes['id'] = $this->id === null ? 'null' : (string) $this->id.'';
+    }
+
+    return $attributes;
+  }
+
+  private function update(): void {
+    if (!$this->isModified()) {
+    	return;
+    }
+    $attribute_cast_list = Vector{};
+    foreach ($this->getDirtyForWrite() as $field => $value) {
+    	$attribute_cast_list[] = $field.' = '.(string) $value;
+    }
+    $this->database->query('UPDATE sample SET '.implode(', ', $attribute_cast_list).' WHERE id = '.$this->getId());
+  }
+
+  private function insert(): void {
+    $dirty_for_write = $this->getDirtyForWrite();
+    if ($this->id != 0) {
+    	$dirty_for_write->add(Pair{'id', (string) $this->id});
+    }
+    $this->database->query('INSERT INTO sample ('.implode(', ', $dirty_for_write->keys()).') VALUES ( '.implode(', ', $dirty_for_write->values()).')');
+    $this->id = $this->database->getLastInsertedId();
+    $this->data_loaded = true;
+    $this->startDirtyTagging();
+  }
+
+  private function startDirtyTagging(): void {
+    $this->dirty = new Map(['integer_field' => false,'int2_field' => false,'float_field' => false,'text_field' => false,'date_field' => false,'remote_addr_field' => false,'id' => false,]);
+  }
+
+  private function tagDirty(string $attribute): void {
+    $this->dirty[$attribute] = true;
+    $this->modified = true;
+  }
+
+  private function isDirty(string $attribute): bool {
+    return $this->dirty[$attribute] === true;
+  }
+
+  private function isModified(): bool {
+    return $this->modified;
+  }
+}
