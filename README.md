@@ -13,7 +13,7 @@ Goal
 ----
 
 The main purpose of HaRM is to perform simple CRUD-Operations in hack strict
-mode - nothing more, nothing less.
+mode - that's it.
 
 Usage
 -----
