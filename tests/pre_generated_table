@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<88ab1855a6d477bd2f84ebfcbb8ca80e>>
+ * @generated SignedSource<<ba7303e987d965d9069708b41fc107f8>>
  */
 namespace Test\ORM;
 use Usox\HaDb\DatabaseInterface;
@@ -38,7 +38,7 @@ final class Sample
     $this->setInt2Field((int) $data['int2_field']);
     $this->setFloatField((float) $data['float_field']);
     $this->setTextField((string) $data['text_field']);
-    $this->setDateField((int) $data['date_field']);
+    $this->setDateField((int) strtotime($data['date_field']));
     $this->setRemoteAddrField((string) $data['remote_addr_field']);
 
     $this->startDirtyTagging();
@@ -146,7 +146,7 @@ final class Sample
     ?string $order = null,
     ?string $addendum = null,
   ): Vector<SampleInterface> {
-    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,EXTRACT( EPOCH FROM date_field) AS date_field,remote_addr_field,id FROM sample';
+    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field,id FROM sample';
     if ($condition !== null) $query .= ' WHERE '.$condition;
     if ($order !== null) $query .= ' ORDER BY '.$order;
     if ($addendum !== null) $query .= ' '.$addendum;
@@ -161,7 +161,7 @@ final class Sample
   }
 
   public function getById(int $id): ?SampleInterface {
-    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,EXTRACT( EPOCH FROM date_field) AS date_field,remote_addr_field,id FROM sample WHERE id = '.$id;
+    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field,id FROM sample WHERE id = '.$id;
     $object = new self($this->database);
     $data = $this->database->getNextResult($this->database->query($query));
     if ($data === null) {
@@ -174,25 +174,25 @@ final class Sample
   private function getDirtyForWrite(): Map<string, string> {
     $attributes = Map{};
     if ($this->isDirty('integer_field')) {
-    	$attributes['integer_field'] = $this->integer_field === null ? 'null' : (string) $this->integer_field.'';
+    	$attributes['integer_field'] = $this->integer_field === null ? 'null' : (string) $this->integer_field;
     }
     if ($this->isDirty('int2_field')) {
-    	$attributes['int2_field'] = $this->int2_field === null ? 'null' : (string) $this->int2_field.'';
+    	$attributes['int2_field'] = $this->int2_field === null ? 'null' : (string) $this->int2_field;
     }
     if ($this->isDirty('float_field')) {
-    	$attributes['float_field'] = $this->float_field === null ? 'null' : (string) $this->float_field.'';
+    	$attributes['float_field'] = $this->float_field === null ? 'null' : (string) $this->float_field;
     }
     if ($this->isDirty('text_field')) {
-    	$attributes['text_field'] = $this->text_field === null ? 'null' : $this->database->quote($this->text_field).'';
+    	$attributes['text_field'] = $this->text_field === null ? 'null' : $this->database->quote($this->text_field);
     }
     if ($this->isDirty('date_field')) {
-    	$attributes['date_field'] = $this->date_field === null ? 'null' : (string) $this->date_field.'::int4::abstime::timestamp';
+    	$attributes['date_field'] = $this->date_field === null ? 'null' : (string) date(DATE_ATOM, $this->date_field);
     }
     if ($this->isDirty('remote_addr_field')) {
-    	$attributes['remote_addr_field'] = $this->remote_addr_field === null ? 'null' : $this->database->quote($this->remote_addr_field).'';
+    	$attributes['remote_addr_field'] = $this->remote_addr_field === null ? 'null' : $this->database->quote($this->remote_addr_field);
     }
     if ($this->isDirty('id')) {
-    	$attributes['id'] = $this->id === null ? 'null' : (string) $this->id.'';
+    	$attributes['id'] = $this->id === null ? 'null' : (string) $this->id;
     }
 
     return $attributes;

@@ -174,9 +174,8 @@ final class TableWriter {
 		foreach ($this->harm->getAttributes() as $attribute) {
 			$name = $attribute->getName();
 			$write_cast = $attribute->getWriteCast('$this->'.$name);
-			$db_write_cast = $attribute->getDBWriteCast();
 			$body .= 'if ($this->isDirty(\''.$name.'\')) {'."\n";
-			$body .= "\t".'$attributes[\''.$name.'\'] = $this->'.$name.' === null ? \'null\' : '.$write_cast.'.\''.$db_write_cast.'\';'."\n";
+			$body .= "\t".'$attributes[\''.$name.'\'] = $this->'.$name.' === null ? \'null\' : '.$write_cast.';'."\n";
 			$body .= '}'."\n";
 		}
 
@@ -326,7 +325,7 @@ final class TableWriter {
 			$this->class->addMethod(
 				$this->cg_factory
 					->codegenMethod(sprintf('get%s', $accessor_name))
-					->setReturnType($attribute->getReadCast())
+					->setReturnType($attribute->getWriteTypeHint())
 					->setBodyf(
 						'return $this->%s;',
 						$attribute_name
@@ -398,7 +397,12 @@ final class TableWriter {
 		$body = '';
 
 		foreach ($this->harm->getAttributes() as $attribute) {
-			$body .= sprintf('$this->set%s((%s) $data[\'%s\']);'."\n", $attribute->getAccessorName(), $attribute->getWriteTypeHint(), $attribute->getName());
+			$body .= sprintf(
+				'$this->set%s((%s) %s);'."\n",
+				$attribute->getAccessorName(),
+				$attribute->getWriteTypeHint(),
+				$attribute->getReadCast('$data[\''.$attribute->getName().'\']')
+			);
 		}
 
 		$this->class->addMethod(

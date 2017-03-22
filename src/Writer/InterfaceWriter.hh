@@ -104,7 +104,7 @@ final class InterfaceWriter {
 				)
 		);
 		foreach ($this->harm->getAttributes() as $attribute) {
-			$readcast = $attribute->getReadCast();
+			$readcast = $attribute->getWriteTypeHint();
 			$accessor_name = $attribute->getAccessorName();
 
 			$this->class->addMethod(
