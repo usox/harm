@@ -1,7 +1,15 @@
 language: php
+sudo: required
+dist: trusty
+group: edge
+
 php:
   - hhvm
+  - hhvm-nightly
+  - hhvm-3.15
 
 before_script: composer install
 
-script: phpunit -c phpunit.xml
+script:
+  - hh_server --check $(pwd)
+  -  vendor/bin/phpunit -c phpunit.xml

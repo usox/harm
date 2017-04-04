@@ -1,0 +1,60 @@
+<?hh // strict
+/**
+ * This file is generated. Do not modify it manually!
+ *
+ * @generated SignedSource<<a29376359ca29d508e29e4e3b77ee468>>
+ */
+namespace Test\ORM;
+
+interface SampleInterface {
+
+  public function delete(): void;
+
+  public function save(): void;
+
+  public function loadDataByDatabaseResult(
+    array<string, ?string> $result,
+  ): void;
+
+  public function getTableName(): string;
+
+  public function getId(): int;
+
+  public function count(?string $where = null): int;
+
+  public function exists(?string $where = null): bool;
+
+  public function findObject(?string $condition = null): SampleInterface;
+
+  public function getObjectsBy(
+    ?string $condition = null,
+    ?string $order = null,
+    ?string $addendum = null,
+  ): Vector<SampleInterface>;
+
+  public function getById(int $id): ?SampleInterface;
+
+  public function getIntegerField(): int;
+
+  public function setIntegerField(int $value): void;
+
+  public function getInt2Field(): int;
+
+  public function setInt2Field(int $value): void;
+
+  public function getFloatField(): float;
+
+  public function setFloatField(float $value): void;
+
+  public function getTextField(): string;
+
+  public function setTextField(string $value): void;
+
+  public function getDateField(): int;
+
+  public function setDateField(int $value): void;
+
+  public function getRemoteAddrField(): string;
+
+  public function setRemoteAddrField(string $value): void;
+}

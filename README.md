@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/usox/harm.svg?branch=master)](https://travis-ci.org/usox/harm)
+
 HaRM - Hack Relation Mapper
 ===========================
 
@@ -11,7 +13,7 @@ Goal
 ----
 
 The main purpose of HaRM is to perform simple CRUD-Operations in hack strict
-mode - nothing more, nothing less.
+mode - that's it.
 
 Usage
 -----

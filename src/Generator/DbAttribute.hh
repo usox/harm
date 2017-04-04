@@ -43,10 +43,11 @@ final class DbAttribute {
 		switch ($this->type) {
 			case 'int':
 			case 'int2':
-			case 'timestamp':
 			case 'float':
 			case 'numeric':
 				return '(string) '.$attribute;
+			case 'timestamp':
+				return '(string) date(DATE_ATOM, '.$attribute.')';
 			default:
 				return '$this->database->quote('.$attribute.')';
 		}
@@ -65,37 +66,17 @@ final class DbAttribute {
 		}
 	}
 
-	public function getReadCast(): string {
-		switch ($this->type) {
-		case 'int':
-		case 'int2':
-		case 'timestamp':
-			return 'int';
-		case 'float':
-			return 'float';
-		case 'text':
-		case 'numeric':
-		default:
-			return 'string';
-		}
-	}
-
-	public function getDBWriteCast(): string {
+	public function getReadCast(string $attribute): string {
 		switch ($this->type) {
 		case 'timestamp':
-			return '::int4::abstime::timestamp';
+			return 'strtotime('.$attribute.')';
 		default:
-			return '';
+			return $attribute;
 		}
 	}
 
 	public function getDBReadCast(): string {
-		switch ($this->type) {
-		case 'timestamp':
-			return 'EXTRACT( EPOCH FROM '.$this->name.') AS '.$this->name;
-		default:
-			return $this->name;
-		}
+		return $this->name;
 	}
 
 	public function getName(): string {

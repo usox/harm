@@ -2,7 +2,7 @@
     "name": "usox/harm",
     "type": "library",
     "description": "Active record/table data gateway hybrid for hack strict mode",
-    "keywords": ["hack", "orm"],
+    "keywords": ["hack", "orm", "hhvm", "hacklang", "database"],
     "license": "MIT",
     "bin": ["bin/harmgen"],
     "homepage": "https://github.com/usox/harm",
@@ -14,9 +14,9 @@
         }
     ],
     "require": {
-    	"hhvm": ">=3.6",
+    	"hhvm": ">=3.15",
 	"usox/hadb": "^1",
-        "facebook/hack-codegen": "^1.1"
+        "facebook/hack-codegen": "^2.2"
     },
     "require-dev": {
 	"phpunit/phpunit": "^5"
