@@ -134,7 +134,7 @@ final class TableWriter {
 					sprintf('$dirty_for_write->add(Pair{\'%s\', (string) $this->%s});', $keyname, $keyname),
 					'}',
 					sprintf(
-						'$this->database->query(\'INSERT INTO %s (\'.implode(\', \', $dirty_for_write->keys()).\') VALUES ( \'.implode(\', \', $dirty_for_write->values()).\')\');',
+						'$this->database->query(\'INSERT INTO %s (\'.implode(\', \', $dirty_for_write->keys()).\') VALUES (\\\'\'.implode(\'\\\', \\\'\', $dirty_for_write->values()).\'\\\')\');',
 						$this->harm->getTableName(),
 					),
 					'$this->id = $this->database->getLastInsertedId();',

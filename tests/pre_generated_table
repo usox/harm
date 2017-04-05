@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<ba7303e987d965d9069708b41fc107f8>>
+ * @generated SignedSource<<a1de802681215747bdc1925d5f5c9777>>
  */
 namespace Test\ORM;
 use Usox\HaDb\DatabaseInterface;
@@ -214,7 +214,7 @@ final class Sample
     if ($this->id != 0) {
     	$dirty_for_write->add(Pair{'id', (string) $this->id});
     }
-    $this->database->query('INSERT INTO sample ('.implode(', ', $dirty_for_write->keys()).') VALUES ( '.implode(', ', $dirty_for_write->values()).')');
+    $this->database->query('INSERT INTO sample ('.implode(', ', $dirty_for_write->keys()).') VALUES (\''.implode('\', \'', $dirty_for_write->values()).'\')');
     $this->id = $this->database->getLastInsertedId();
     $this->data_loaded = true;
     $this->startDirtyTagging();
