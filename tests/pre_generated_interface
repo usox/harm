@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<a29376359ca29d508e29e4e3b77ee468>>
+ * @generated SignedSource<<80db98f148376f6321ff4ddf3c5cd3ed>>
  */
 namespace Test\ORM;
 
@@ -11,6 +11,8 @@ interface SampleInterface {
   public function delete(): void;
 
   public function save(): void;
+
+  public function isNew(): bool;
 
   public function loadDataByDatabaseResult(
     array<string, ?string> $result,

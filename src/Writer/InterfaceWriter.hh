@@ -51,6 +51,11 @@ final class InterfaceWriter {
 		);
 		$this->class->addMethod(
 			$this->cg_factory
+				->codegenMethod('isNew')
+				->setReturnType('bool')
+		);
+		$this->class->addMethod(
+			$this->cg_factory
 				->codegenMethod('loadDataByDatabaseResult')
 				->addParameter('array<string, ?string> $result')
 				->setReturnType('void')
