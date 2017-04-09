@@ -87,6 +87,7 @@ final class TableWriter {
 		$this->writeCount();
 		$this->writeExists();
 		$this->writeFindObject();
+		$this->writeQuote();
 		$this->writeGetObjectsBy();
 		$this->writeGetById();
 		$this->writeGetDirtyForWrite();
@@ -270,6 +271,18 @@ final class TableWriter {
 					'throw new \Usox\HaRm\Exception\ObjectNotFoundException();',
 					'}',
 					'return $iterator->items()->getIterator()->current();'
+				)
+		);
+	}
+
+	private function writeQuote(): void {
+		$this->class->addMethod(
+			$this->cg_factory
+				->codegenMethod('quote')
+				->addParameter('string $subject')
+				->setReturnType('string')
+				->setBody(
+					'return $this->database->quote($subject);'
 				)
 		);
 	}

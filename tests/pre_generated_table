@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<a1de802681215747bdc1925d5f5c9777>>
+ * @generated SignedSource<<fb338b3317c2948aff7188f205fc5909>>
  */
 namespace Test\ORM;
 use Usox\HaDb\DatabaseInterface;
@@ -139,6 +139,10 @@ final class Sample
     	throw new \Usox\HaRm\Exception\ObjectNotFoundException();
     }
     return $iterator->items()->getIterator()->current();
+  }
+
+  public function quote(string $subject): string {
+    return $this->database->quote($subject);
   }
 
   public function getObjectsBy(

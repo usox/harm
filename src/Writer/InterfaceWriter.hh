@@ -84,6 +84,12 @@ final class InterfaceWriter {
 		);
 		$this->class->addMethod(
 			$this->cg_factory
+				->codegenMethod('quote')
+				->addParameter('string $subject')
+				->setReturnType('string')
+		);
+		$this->class->addMethod(
+			$this->cg_factory
 				->codegenMethod('findObject')
 				->addParameter('?string $condition = null')
 				->setReturnType(

@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<80db98f148376f6321ff4ddf3c5cd3ed>>
+ * @generated SignedSource<<59df2d39ec8db34996e872c864e3224b>>
  */
 namespace Test\ORM;
 
@@ -25,6 +25,8 @@ interface SampleInterface {
   public function count(?string $where = null): int;
 
   public function exists(?string $where = null): bool;
+
+  public function quote(string $subject): string;
 
   public function findObject(?string $condition = null): SampleInterface;
 
