@@ -158,7 +158,7 @@ final class TableWriter {
 					'}',
 					'$attribute_cast_list = Vector{};',
 					'foreach ($this->getDirtyForWrite() as $field => $value) {',
-					'$attribute_cast_list[] = $field.\' = \'.(string) $value;',
+					'$attribute_cast_list[] = $field.\' = \\\'\'.(string) $value.\'\\\'\';',
 					'}',
 					sprintf(
 						'$this->database->query(\'UPDATE %s SET \'.implode(\', \', $attribute_cast_list).\' WHERE %s = \'.$this->getId());',
