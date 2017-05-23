@@ -152,13 +152,16 @@ final class TableWriter {
 				->setReturnType('void')
 				->setPrivate()
 				->setBodyf(
-					"%s\n\t%s\n%s\n%s\n%s\n\t%s\n%s\n%s",
+					"%s\n\t%s\n%s\n%s\n%s\n\t%s\n%s\n%s\n\t%s\n%s\n%s",
 					'if (!$this->isModified()) {',
 					'return;',
 					'}',
 					'$attribute_cast_list = Vector{};',
 					'foreach ($this->getDirtyForWrite() as $field => $value) {',
 					'$attribute_cast_list[] = $field.\' = \\\'\'.(string) $value.\'\\\'\';',
+					'}',
+					'if ($attribute_cast_list->count() === 0) {',
+					'return;',
 					'}',
 					sprintf(
 						'$this->database->query(\'UPDATE %s SET \'.implode(\', \', $attribute_cast_list).\' WHERE %s = \'.$this->getId());',

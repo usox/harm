@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<b254cf331056e34e292c985c3c6a82bc>>
+ * @generated SignedSource<<6febab0dd62107b42baa7addfdfd4eb3>>
  */
 namespace Test\ORM;
 use Usox\HaDb\DatabaseInterface;
@@ -209,6 +209,9 @@ final class Sample
     $attribute_cast_list = Vector{};
     foreach ($this->getDirtyForWrite() as $field => $value) {
     	$attribute_cast_list[] = $field.' = \''.(string) $value.'\'';
+    }
+    if ($attribute_cast_list->count() === 0) {
+    	return;
     }
     $this->database->query('UPDATE sample SET '.implode(', ', $attribute_cast_list).' WHERE id = '.$this->getId());
   }
