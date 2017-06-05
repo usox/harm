@@ -91,6 +91,7 @@ final class TableWriter {
 		$this->writeQuote();
 		$this->writeGetObjectsBy();
 		$this->writeGetById();
+		$this->writeEmpty();
 		$this->writeGetDirtyForWrite();
 		$this->writeUpdate();
 		$this->writeInsert();
@@ -225,6 +226,18 @@ final class TableWriter {
 					'}',
 					'$object->loadDataByDatabaseResult($data);',
 					'return $object;'
+				)
+		);
+	}
+
+	private function writeEmpty(): void {
+		$this->class->addMethod(
+			$this->cg_factory
+				->codegenMethod('empty')
+				->setReturnType('void')
+				->setBodyf(
+					"%s",
+					'$this->database->emptyTable(static::TABLE_NAME);'
 				)
 		);
 	}

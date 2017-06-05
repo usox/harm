@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<59df2d39ec8db34996e872c864e3224b>>
+ * @generated SignedSource<<c91d45077eca6d87315b27cd4e19306a>>
  */
 namespace Test\ORM;
 
@@ -37,6 +37,8 @@ interface SampleInterface {
   ): Vector<SampleInterface>;
 
   public function getById(int $id): ?SampleInterface;
+
+  public function empty(): void;
 
   public function getIntegerField(): int;
 

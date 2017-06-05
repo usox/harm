@@ -114,6 +114,11 @@ final class InterfaceWriter {
 					sprintf('?%sInterface', $classname)
 				)
 		);
+		$this->class->addMethod(
+			$this->cg_factory
+				->codegenMethod('empty')
+				->setReturnType('void')
+		);
 		foreach ($this->harm->getAttributes() as $attribute) {
 			$readcast = $attribute->getWriteTypeHint();
 			$accessor_name = $attribute->getAccessorName();

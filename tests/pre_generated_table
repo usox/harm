@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<5211f1cd738684d4e7f1373287161dbe>>
+ * @generated SignedSource<<5ffe1d9908502dbde13d1aaea116e4df>>
  */
 namespace Test\ORM;
 use Usox\HaDb\DatabaseInterface;
@@ -175,6 +175,10 @@ final class Sample
     }
     $object->loadDataByDatabaseResult($data);
     return $object;
+  }
+
+  public function empty(): void {
+    $this->database->emptyTable(static::TABLE_NAME);
   }
 
   private function getDirtyForWrite(): Map<string, string> {
