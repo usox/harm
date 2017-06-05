@@ -1,25 +1,2 @@
-#!/usr/bin/env hhvm
-<?hh // partial
-require_once 'vendor/autoload.php';
-
-$arguments = $_SERVER['argv'];
-
-if (count($arguments) != 3) {
-	usage();
-	exit();
-}
-$po = new \Usox\HaRm\Generator\HarmGenerator($arguments[2]);
-$po->parseConfigFile();
-
-$argt = $arguments[1];
-if ($argt === 'table') {
-	$po->writeTable();
-} else if ($argt === 'interface') {
-	$po->writeInterface();
-} else {
-	usage();
-}
-
-function usage() {
-	print "./bin/harmgen {table|interface} configfile".PHP_EOL;
-}
+#!/bin/bash
+exec /usr/bin/env hhvm -vHack.Lang.LookForTypechecker=0 bin/harmgen_hh "$@"

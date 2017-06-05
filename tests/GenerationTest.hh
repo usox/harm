@@ -8,7 +8,7 @@ class GenerationTest extends \PHPUnit_Framework_TestCase {
 			file_get_contents('tests/pre_generated_table')
 		);
 		
-		system('hhvm bin/harmgen table tests/sample.harm');
+		system('bin/harmgen table tests/sample.harm');
 	}
 
 	public function testSampleInterfaceGeneration() {
@@ -16,6 +16,6 @@ class GenerationTest extends \PHPUnit_Framework_TestCase {
 			file_get_contents('tests/pre_generated_interface')
 		);
 		
-		system('hhvm bin/harmgen interface tests/sample.harm');
+		system('bin/harmgen interface tests/sample.harm');
 	}
 }  
