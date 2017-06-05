@@ -41,6 +41,7 @@ final class TableWriter {
 					sprintf('%sInterface', $this->harm->getClassName())
 				)
 			)
+			->addConst('TABLE_NAME', $this->harm->getTableName())
 			->addVar(
 				$this->cg_factory
 					->codegenMemberVar($this->harm->getPrimaryKeyName())

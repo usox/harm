@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<6febab0dd62107b42baa7addfdfd4eb3>>
+ * @generated SignedSource<<5211f1cd738684d4e7f1373287161dbe>>
  */
 namespace Test\ORM;
 use Usox\HaDb\DatabaseInterface;
@@ -10,6 +10,8 @@ use Usox\HaDb\DatabaseInterface;
 final class Sample
   implements
     SampleInterface {
+
+  const TABLE_NAME = 'sample';
 
   private int $id = 0;
   private bool $data_loaded = false;
