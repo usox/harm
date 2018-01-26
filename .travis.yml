@@ -6,7 +6,6 @@ group: edge
 php:
   - hhvm
   - hhvm-nightly
-  - hhvm-3.15
 
 before_script: composer install
 
