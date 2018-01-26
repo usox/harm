@@ -1,2 +1,3 @@
 #!/bin/bash
-exec /usr/bin/env hhvm -vHack.Lang.LookForTypechecker=0 bin/harmgen_hh "$@"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+exec /usr/bin/env hhvm -vHack.Lang.LookForTypechecker=0 "$DIR/harmgen_hh" "$@"

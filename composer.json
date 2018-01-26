@@ -4,7 +4,10 @@
     "description": "Active record/table data gateway hybrid for hack strict mode",
     "keywords": ["hack", "orm", "hhvm", "hacklang", "database"],
     "license": "MIT",
-    "bin": ["bin/harmgen"],
+    "bin": [
+	    "bin/harmgen",
+	    "bin/harmgen_hh"
+    ],
     "homepage": "https://github.com/usox/harm",
     "authors": [
         {

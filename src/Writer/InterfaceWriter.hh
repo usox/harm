@@ -116,7 +116,7 @@ final class InterfaceWriter {
 		);
 		$this->class->addMethod(
 			$this->cg_factory
-				->codegenMethod('empty')
+				->codegenMethod('emptyTable')
 				->setReturnType('void')
 		);
 		foreach ($this->harm->getAttributes() as $attribute) {

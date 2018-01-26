@@ -232,7 +232,7 @@ final class TableWriter {
 	private function writeEmpty(): void {
 		$this->class->addMethod(
 			$this->cg_factory
-				->codegenMethod('empty')
+				->codegenMethod('emptyTable')
 				->setReturnType('void')
 				->setBodyf(
 					"%s",
