@@ -21,7 +21,7 @@ final class DbAttribute {
 		return $this->accessor_name;	
 	}
 
-	public function setDefaultValue(codegen\CodegenMemberVar $member_var): void {
+	public function setDefaultValue(codegen\CodegenProperty $member_var): void {
 		switch ($this->type) {
 			case 'int':
 			case 'int2':

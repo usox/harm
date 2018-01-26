@@ -2,10 +2,10 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<5ffe1d9908502dbde13d1aaea116e4df>>
+ * @generated SignedSource<<9a358474f4dd826cb5abb86f81e8db6a>>
  */
 namespace Test\ORM;
-use Usox\HaDb\DatabaseInterface;
+use namespace Usox\HaDb\DatabaseInterface;
 
 final class Sample
   implements

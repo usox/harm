@@ -25,7 +25,6 @@ final class TableWriter {
 			->codegenFile(
 				sprintf('%s.hh', $this->harm->getClassName())
 			)
-			->setIsStrict(true)
 			->setNamespace($this->harm->getNamespaceName())
 			->useNamespace('Usox\HaDb\DatabaseInterface')
 			->setDoClobber(true);
@@ -42,27 +41,27 @@ final class TableWriter {
 				)
 			)
 			->addConst('TABLE_NAME', $this->harm->getTableName())
-			->addVar(
+			->addProperty(
 				$this->cg_factory
-					->codegenMemberVar($this->harm->getPrimaryKeyName())
+					->codegenProperty($this->harm->getPrimaryKeyName())
 					->setType('int')
 					->setValue(0)
 			)
-			->addVar(
+			->addProperty(
 				$this->cg_factory
-					->codegenMemberVar('data_loaded')
+					->codegenProperty('data_loaded')
 					->setType('bool')
 					->setValue(false)
 			)
-			->addVar(
+			->addProperty(
 				$this->cg_factory
-					->codegenMemberVar('modified')
+					->codegenProperty('modified')
 					->setType('bool')
 					->setValue(false)
 			)
-			->addVar(
+			->addProperty(
 				$this->cg_factory
-					->codegenMemberVar('dirty')
+					->codegenProperty('dirty')
 					->setType('Map<string, bool>')
 			);
 
@@ -71,11 +70,11 @@ final class TableWriter {
 	public function writeOut(): void {
 		foreach ($this->harm->getAttributes() as $attribute) {
 			$var = $this->cg_factory
-				->codegenMemberVar($attribute->getName())
+				->codegenProperty($attribute->getName())
 				->setType($attribute->getWriteTypeHint());
 
 			$attribute->setDefaultValue($var);
-			$this->class->addVar($var);
+			$this->class->addProperty($var);
 		}
 
 		$this->writeConstructor();
