@@ -2,10 +2,10 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<21ed23f266578c0d694f8ba6f3003ebe>>
+ * @generated SignedSource<<8b228ab006b4d3c7db99d089bc30e156>>
  */
 namespace Test\ORM;
-use namespace Usox\HaDb\DatabaseInterface;
+use namespace Usox\HaDb;
 
 final class Sample
   implements
@@ -24,7 +24,7 @@ final class Sample
   private int $date_field = 0;
   private string $remote_addr_field = '';
 
-  public function __construct(private DatabaseInterface $database): void {
+  public function __construct(private HaDb\DatabaseInterface $database): void {
     $this->startDirtyTagging();
   }
 
