@@ -26,7 +26,7 @@ final class TableWriter {
 				sprintf('%s.hh', $this->harm->getClassName())
 			)
 			->setNamespace($this->harm->getNamespaceName())
-			->useNamespace('Usox\HaDb\DatabaseInterface')
+			->useNamespace('Usox\HaDb')
 			->setDoClobber(true);
 
 		$this->class = $this->cg_factory
@@ -415,7 +415,7 @@ final class TableWriter {
 		$this->class->addMethod(
 			$this->cg_factory
 				->codegenMethod('__construct')
-				->addParameter('private DatabaseInterface $database')
+				->addParameter('private HaDb\DatabaseInterface $database')
 				->setReturnType('void')
 				->setBody('$this->startDirtyTagging();')
 		);
