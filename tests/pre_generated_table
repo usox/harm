@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<4f8743704e3f583954d5efd834e9798f>>
+ * @generated SignedSource<<21ed23f266578c0d694f8ba6f3003ebe>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb\DatabaseInterface;
