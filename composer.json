@@ -1,33 +1,33 @@
 {
-    "name": "usox/harm",
-    "type": "library",
-    "description": "Active record/table data gateway hybrid for hack strict mode",
-    "keywords": ["hack", "orm", "hhvm", "hacklang", "database"],
-    "license": "MIT",
-    "bin": [
-	    "bin/harmgen",
-	    "bin/harmgen_hh"
-    ],
-    "homepage": "https://github.com/usox/harm",
-    "authors": [
-        {
-            "name": "Daniel Jakob",
-            "email": "dev@usox.org",
-            "role": "Developer"
-        }
-    ],
-    "require": {
- 	"hhvm": ">=3.23",
-	"usox/hadb": "^1",
-        "facebook/hack-codegen": "^3"
-    },
-    "require-dev": {
-	"phpunit/phpunit": "^5"
-    },
-    "autoload": {
-        "psr-4": {
-		"Usox\\HaRm\\": "src/",
-		"Usox\\HaRm\\Test\\": "tests/"
+	"name": "usox/harm",
+	"type": "library",
+	"description": "Active record/table data gateway hybrid for hack strict mode",
+	"keywords": ["hack", "orm", "hhvm", "hacklang", "database"],
+	"license": "MIT",
+	"bin": [
+		"bin/harmgen",
+		"bin/harmgen_hh"
+	],
+	"homepage": "https://github.com/usox/harm",
+	"authors": [
+		{
+			"name": "Daniel Jakob",
+			"email": "dev@usox.org",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"hhvm": ">=3.24",
+		"usox/hadb": "^2",
+		"facebook/hack-codegen": "^3"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^5"
+	},
+	"autoload": {
+		"psr-4": {
+			"Usox\\HaRm\\": "src/",
+			"Usox\\HaRm\\Test\\": "tests/"
+		}
 	}
-    }
 }
