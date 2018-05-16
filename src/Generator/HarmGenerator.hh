@@ -22,26 +22,26 @@ final class HarmGenerator {
 	}
 
 	public function parseConfigFile(): void {
-		if (!file_exists($this->config_file_path)) {
+		if (!\file_exists($this->config_file_path)) {
 			throw new Exception\HarmFileNotFoundException(
-				sprintf('Could not find harm-file: %s', $this->config_file_path)
+				\sprintf('Could not find harm-file: %s', $this->config_file_path)
 			);
 		}
 
-		$config_file = file($this->config_file_path);
+		$config_file = \file($this->config_file_path);
 		$allowed_types = new Vector([
 			'int', 'int2', 'float', 'text', 'timestamp', 'inet'
 		]);
 
 		foreach ($config_file as $line) {
-			if (strpos($line, '#') === 0) {
+			if (\strpos($line, '#') === 0) {
 				continue;
 			}
-			if (strpos($line, '=') === false) {
+			if (\strpos($line, '=') === false) {
 				continue;
 			}
-			list($key, $config_value) = explode('=', $line, 2);
-			$config_value = trim($config_value);
+			list($key, $config_value) = \explode('=', $line, 2);
+			$config_value = \trim($config_value);
 			switch ($key) {
 				case 'table':
 					$this->table_name = $config_value;
@@ -56,20 +56,20 @@ final class HarmGenerator {
 					$this->namespace_name = $config_value;
 					break;
 				case 'attribute':
-					if (strpos($config_value, ':') === false) {
+					if (\strpos($config_value, ':') === false) {
 						throw new Exception\InvalidAttributeDeclarationException($config_value);
 					}
-					list($attribute_name, $attribute_type) = explode(':', $config_value, 2);
+					list($attribute_name, $attribute_type) = \explode(':', $config_value, 2);
 					if ($allowed_types->linearSearch($attribute_type) === -1) {
 						throw new Exception\InvalidAttributeTypeException($attribute_type);
 					}
 					$this->attributes->add(
-						new DbAttribute(trim($attribute_name), trim($attribute_type))
+						new DbAttribute(\trim($attribute_name), \trim($attribute_type))
 					);
 					break;
 				default:
 					throw new Exception\UnknownHarmFileKeyException(
-						sprintf('Unknown configuration key: %s', $key)
+						\sprintf('Unknown configuration key: %s', $key)
 					);
 			}
 		}

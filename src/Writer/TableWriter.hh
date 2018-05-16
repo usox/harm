@@ -23,7 +23,7 @@ final class TableWriter {
 		
 		$this->file = $this->cg_factory
 			->codegenFile(
-				sprintf('%s.hh', $this->harm->getClassName())
+				\sprintf('%s.hh', $this->harm->getClassName())
 			)
 			->setNamespace($this->harm->getNamespaceName())
 			->useNamespace('Usox\HaDb')
@@ -37,7 +37,7 @@ final class TableWriter {
 			->addInterface(
 				$this->cg_factory
 				->codegenImplementsInterface(
-					sprintf('%sInterface', $this->harm->getClassName())
+					\sprintf('%sInterface', $this->harm->getClassName())
 				)
 			)
 			->addConst('TABLE_NAME', $this->harm->getTableName())
@@ -64,7 +64,6 @@ final class TableWriter {
 					->codegenProperty('dirty')
 					->setType('Map<string, bool>')
 			);
-
 	}
 
 	public function writeOut(): void {
@@ -106,7 +105,7 @@ final class TableWriter {
 		$attribute_dirty_tags = '';
 
 		foreach ($attributes as $attribute) {
-			$attribute_dirty_tags .= sprintf('\'%s\' => false,', $attribute->getName());
+			$attribute_dirty_tags .= \sprintf('\'%s\' => false,', $attribute->getName());
 		}
 
 		$this->class->addMethod(
@@ -132,10 +131,10 @@ final class TableWriter {
 				->setBodyf(
 					"%s\n%s\n\t%s\n%s\n%s\n%s\n%s\n%s",
 					'$dirty_for_write = $this->getDirtyForWrite();',
-					sprintf('if ($this->%s != 0) {', $keyname),
-					sprintf('$dirty_for_write->add(Pair{\'%s\', (string) $this->%s});', $keyname, $keyname),
+					\sprintf('if ($this->%s != 0) {', $keyname),
+					\sprintf('$dirty_for_write->add(Pair{\'%s\', (string) $this->%s});', $keyname, $keyname),
 					'}',
-					sprintf(
+					\sprintf(
 						'$this->database->query(\'INSERT INTO %s (\'.implode(\', \', $dirty_for_write->keys()).\') VALUES (\\\'\'.implode(\'\\\', \\\'\', $dirty_for_write->values()).\'\\\')\');',
 						$this->harm->getTableName(),
 					),
@@ -164,7 +163,7 @@ final class TableWriter {
 					'if ($attribute_cast_list->count() === 0) {',
 					'return;',
 					'}',
-					sprintf(
+					\sprintf(
 						'$this->database->query(\'UPDATE %s SET \'.implode(\', \', $attribute_cast_list).\' WHERE %s = \'.$this->getId());',
 						$this->harm->getTableName(),
 						$this->harm->getPrimaryKeyName(),
@@ -209,12 +208,12 @@ final class TableWriter {
 			$this->cg_factory
 				->codegenMethod('getById')
 				->addParameter('int $id')
-				->setReturnType(sprintf('?%sInterface', $this->harm->getClassName()))
+				->setReturnType(\sprintf('?%sInterface', $this->harm->getClassName()))
 				->setBodyf(
 					"%s\n%s\n%s\n%s\n\t%s\n%s\n%s\n%s",
-					sprintf(
+					\sprintf(
 						'$query = \'SELECT %s FROM %s WHERE %s = \'.$id;',
-						implode(',', $attribute_list),
+						\implode(',', $attribute_list),
 						$this->harm->getTableName(),
 						$this->harm->getPrimaryKeyName(),
 					),
@@ -255,10 +254,10 @@ final class TableWriter {
 				->addParameter('?string $condition = null')
 				->addParameter('?string $order = null')
 				->addParameter('?string $addendum = null')
-				->setReturnType(sprintf('Vector<%sInterface>', $this->harm->getClassName()))
+				->setReturnType(\sprintf('Vector<%sInterface>', $this->harm->getClassName()))
 				->setBodyf(
 					"%s\n%s\n%s\n%s\n%s\n%s\n%s\n\t%s\n\t%s\n\t%s\n%s\n%s",
-					sprintf('$query = \'SELECT %s FROM %s\';', implode(',', $attribute_list), $this->harm->getTableName()),
+					\sprintf('$query = \'SELECT %s FROM %s\';', \implode(',', $attribute_list), $this->harm->getTableName()),
 					'if ($condition !== null) $query .= \' WHERE \'.$condition;',
 					'if ($order !== null) $query .= \' ORDER BY \'.$order;',
 					'if ($addendum !== null) $query .= \' \'.$addendum;',
@@ -279,7 +278,7 @@ final class TableWriter {
 			$this->cg_factory
 				->codegenMethod('findObject')
 				->addParameter('?string $condition = null')
-				->setReturnType(sprintf('%sInterface', $this->harm->getClassName()))
+				->setReturnType(\sprintf('%sInterface', $this->harm->getClassName()))
 				->setBodyf(
 					"%s\n%s\n\t%s\n%s\n%s",
 					'$iterator = $this->getObjectsBy($condition, null, \'LIMIT 1\');',
@@ -312,7 +311,7 @@ final class TableWriter {
 				->setBodyf(
 					"%s\n%s",
 					'$condition !== null ? $condition = sprintf(\'WHERE %s\', $condition) : $condition = \'\';',
-					sprintf('return $this->database->count(sprintf(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $condition));', $this->harm->getPrimaryKeyName()),
+					\sprintf('return $this->database->count(sprintf(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $condition));', $this->harm->getPrimaryKeyName()),
 				)
 		);
 	}
@@ -353,7 +352,7 @@ final class TableWriter {
 
 			$this->class->addMethod(
 				$this->cg_factory
-					->codegenMethod(sprintf('get%s', $accessor_name))
+					->codegenMethod(\sprintf('get%s', $accessor_name))
 					->setReturnType($attribute->getWriteTypeHint())
 					->setBodyf(
 						'return $this->%s;',
@@ -362,13 +361,13 @@ final class TableWriter {
 			);
 			$this->class->addMethod(
 				$this->cg_factory
-					->codegenMethod(sprintf('set%s', $accessor_name))
-					->addParameter(sprintf('%s $value', $attribute->getWriteTypeHint()))
+					->codegenMethod(\sprintf('set%s', $accessor_name))
+					->addParameter(\sprintf('%s $value', $attribute->getWriteTypeHint()))
 					->setReturnType('void')
 					->setBodyf(
 						"%s\n%s",
-						sprintf('$this->tagDirty(\'%s\');', $attribute_name),
-						sprintf('$this->%s = $value;', $attribute_name)
+						\sprintf('$this->tagDirty(\'%s\');', $attribute_name),
+						\sprintf('$this->%s = $value;', $attribute_name)
 					)
 			);
 		}
@@ -426,7 +425,7 @@ final class TableWriter {
 		$body = '';
 
 		foreach ($this->harm->getAttributes() as $attribute) {
-			$body .= sprintf(
+			$body .= \sprintf(
 				'$this->set%s((%s) %s);'."\n",
 				$attribute->getAccessorName(),
 				$attribute->getWriteTypeHint(),
@@ -443,7 +442,7 @@ final class TableWriter {
 					"%s\n%s\n%s\n%s\n%s",
 					'$this->data_loaded = true;',
 					'$this->modified = false;',
-					sprintf('$this->%s = (int) $data[\'%s\'];', $keyname, $keyname),
+					\sprintf('$this->%s = (int) $data[\'%s\'];', $keyname, $keyname),
 					$body,
 					'$this->startDirtyTagging();'
 				)

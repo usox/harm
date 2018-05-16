@@ -22,7 +22,8 @@
 		"facebook/hack-codegen": "^3"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^5"
+		"phpunit/phpunit": "^5",
+		"facebook/fbexpect": "^1"
 	},
 	"autoload": {
 		"psr-4": {

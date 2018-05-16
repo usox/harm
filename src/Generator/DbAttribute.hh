@@ -12,10 +12,10 @@ final class DbAttribute {
 
 	public function getAccessorName(): string {
 		if ($this->accessor_name === null) {
-			$this->accessor_name = str_replace(
+			$this->accessor_name = \str_replace(
 				'_',
 				'',
-				ucwords($this->name, '_')
+				\ucwords($this->name, '_')
 			);
 		}
 		return $this->accessor_name;	

@@ -22,7 +22,7 @@ final class InterfaceWriter {
 
 		$this->file = $this->cg_factory
 			->codegenFile(
-				sprintf('%sInterface.hh', $this->harm->getClassName())
+				\sprintf('%sInterface.hh', $this->harm->getClassName())
 			)
 			->setDoClobber(true)
 			->setFileType(CodegenFileType::HACK_STRICT)
@@ -32,7 +32,7 @@ final class InterfaceWriter {
 
 		$this->class = $this->cg_factory
 			->codegenInterface(
-				sprintf('%sInterface', $this->harm->getClassName())
+				\sprintf('%sInterface', $this->harm->getClassName())
 			);
 	}
 
@@ -93,7 +93,7 @@ final class InterfaceWriter {
 				->codegenMethod('findObject')
 				->addParameter('?string $condition = null')
 				->setReturnType(
-					sprintf('%sInterface', $classname)
+					\sprintf('%sInterface', $classname)
 				)
 		);
 		$this->class->addMethod(
@@ -103,7 +103,7 @@ final class InterfaceWriter {
 				->addParameter('?string $order = null')
 				->addParameter('?string $addendum = null')
 				->setReturnType(
-					sprintf('Vector<%sInterface>', $classname)
+					\sprintf('Vector<%sInterface>', $classname)
 				)
 		);
 		$this->class->addMethod(
@@ -111,7 +111,7 @@ final class InterfaceWriter {
 				->codegenMethod('getById')
 				->addParameter('int $id')
 				->setReturnType(
-					sprintf('?%sInterface', $classname)
+					\sprintf('?%sInterface', $classname)
 				)
 		);
 		$this->class->addMethod(
@@ -126,16 +126,16 @@ final class InterfaceWriter {
 			$this->class->addMethod(
 				$this->cg_factory
 					->codegenMethod(
-						sprintf('get%s', $accessor_name)
+						\sprintf('get%s', $accessor_name)
 					)
 					->setReturnType($readcast)
 			);
 			$this->class->addMethod(
 				$this->cg_factory
 					->codegenMethod(
-						sprintf('set%s', $accessor_name)
+						\sprintf('set%s', $accessor_name)
 					)
-					->addParameter(sprintf('%s $value', $readcast))
+					->addParameter(\sprintf('%s $value', $readcast))
 					->setReturnType('void')
 			);
 		}
