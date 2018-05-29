@@ -2,16 +2,18 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<8b228ab006b4d3c7db99d089bc30e156>>
+ * @generated SignedSource<<c516afb452683745f59b80c101cb66e4>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb;
+use namespace HH\Lib\Str;
 
 final class Sample
   implements
     SampleInterface {
 
   const TABLE_NAME = 'sample';
+  const SEQUENCE_NAME = 'sample_id_seq';
 
   private int $id = 0;
   private bool $data_loaded = false;
@@ -24,7 +26,9 @@ final class Sample
   private int $date_field = 0;
   private string $remote_addr_field = '';
 
-  public function __construct(private HaDb\DatabaseInterface $database): void {
+  public function __construct(
+    private HaDb\DatabaseAdapterInterface $database,
+  ): void {
     $this->startDirtyTagging();
   }
 
@@ -40,7 +44,7 @@ final class Sample
     $this->setInt2Field((int) $data['int2_field']);
     $this->setFloatField((float) $data['float_field']);
     $this->setTextField((string) $data['text_field']);
-    $this->setDateField((int) strtotime($data['date_field']));
+    $this->setDateField((int) \strtotime($data['date_field']));
     $this->setRemoteAddrField((string) $data['remote_addr_field']);
 
     $this->startDirtyTagging();
@@ -126,13 +130,21 @@ final class Sample
   }
 
   public function count(?string $condition = null): int {
-    $condition !== null ? $condition = sprintf('WHERE %s', $condition) : $condition = '';
-    return $this->database->count(sprintf('SELECT COUNT(id) as count FROM %s %s', $this->getTableName(), $condition));
+    if ($condition !== null) {
+      $condition = Str\format('WHERE %s', $condition);
+    } else {
+      $condition = '';
+    }
+    return $this->database->count(Str\format('SELECT COUNT(id) as count FROM %s %s', $this->getTableName(), $condition));
   }
 
   public function exists(?string $condition = null): bool {
-    $condition !== null ? $condition = sprintf('WHERE %s', $condition) : $condition = '';
-    return $this->database->exists(sprintf('SELECT 1 FROM %s %s', $this->getTableName(), $condition));
+    if ($condition !== null) {
+      $condition = Str\format('WHERE %s', $condition);
+    } else {
+      $condition = '';
+    }
+    return $this->database->exists(Str\format('SELECT 1 FROM %s %s', $this->getTableName(), $condition));
   }
 
   public function findObject(?string $condition = null): SampleInterface {
@@ -196,7 +208,7 @@ final class Sample
     	$attributes['text_field'] = $this->text_field === null ? 'null' : $this->database->quote($this->text_field);
     }
     if ($this->isDirty('date_field')) {
-    	$attributes['date_field'] = $this->date_field === null ? 'null' : (string) date(DATE_ATOM, $this->date_field);
+    	$attributes['date_field'] = $this->date_field === null ? 'null' : (string) \date(\DATE_ATOM, $this->date_field);
     }
     if ($this->isDirty('remote_addr_field')) {
     	$attributes['remote_addr_field'] = $this->remote_addr_field === null ? 'null' : $this->database->quote($this->remote_addr_field);
@@ -219,7 +231,7 @@ final class Sample
     if ($attribute_cast_list->count() === 0) {
     	return;
     }
-    $this->database->query('UPDATE sample SET '.implode(', ', $attribute_cast_list).' WHERE id = '.$this->getId());
+    $this->database->query('UPDATE sample SET '.\implode(', ', $attribute_cast_list).' WHERE id = '.$this->getId());
   }
 
   private function insert(): void {
@@ -227,8 +239,8 @@ final class Sample
     if ($this->id != 0) {
     	$dirty_for_write->add(Pair{'id', (string) $this->id});
     }
-    $this->database->query('INSERT INTO sample ('.implode(', ', $dirty_for_write->keys()).') VALUES (\''.implode('\', \'', $dirty_for_write->values()).'\')');
-    $this->id = $this->database->getLastInsertedId();
+    $this->database->query('INSERT INTO sample ('.\implode(', ', $dirty_for_write->keys()).') VALUES (\''.\implode('\', \'', $dirty_for_write->values()).'\')');
+    $this->id = $this->database->getLastInsertedId(static::SEQUENCE_NAME);
     $this->data_loaded = true;
     $this->startDirtyTagging();
   }

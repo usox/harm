@@ -1,6 +1,7 @@
 <?hh // strict
 namespace Usox\HaRm\Generator;
 
+use HH\Lib\Str;
 use Usox\HaRm\Writer\TableWriter;
 use Usox\HaRm\Writer\InterfaceWriter;
 use Usox\HaRm\Exception;
@@ -24,7 +25,7 @@ final class HarmGenerator {
 	public function parseConfigFile(): void {
 		if (!\file_exists($this->config_file_path)) {
 			throw new Exception\HarmFileNotFoundException(
-				\sprintf('Could not find harm-file: %s', $this->config_file_path)
+				Str\format('Could not find harm-file: %s', $this->config_file_path)
 			);
 		}
 
@@ -69,7 +70,7 @@ final class HarmGenerator {
 					break;
 				default:
 					throw new Exception\UnknownHarmFileKeyException(
-						\sprintf('Unknown configuration key: %s', $key)
+						Str\format('Unknown configuration key: %s', $key)
 					);
 			}
 		}
@@ -99,6 +100,14 @@ final class HarmGenerator {
 
 	public function getTableName(): string {
 		return $this->table_name;
+	}
+
+	public function getSequenceName(): string {
+		return Str\format(
+			'%s_%s_seq',
+			$this->getTableName(),
+			$this->getPrimaryKeyName()
+		);
 	}
 
 	public function getAttributes(): Vector<DbAttribute> {

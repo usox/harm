@@ -1,6 +1,7 @@
 <?hh // strict
 namespace Usox\HaRm\Writer;
 
+use HH\Lib\Str;
 use Usox\HaRm\Generator\HarmGenerator;
 use Usox\HaRm\Generator\DbAttribute;
 use Facebook\HackCodegen\HackCodegenFactory;
@@ -23,10 +24,11 @@ final class TableWriter {
 		
 		$this->file = $this->cg_factory
 			->codegenFile(
-				\sprintf('%s.hh', $this->harm->getClassName())
+				Str\format('%s.hh', $this->harm->getClassName())
 			)
 			->setNamespace($this->harm->getNamespaceName())
 			->useNamespace('Usox\HaDb')
+			->useNamespace('HH\Lib\Str')
 			->setDoClobber(true);
 
 		$this->class = $this->cg_factory
@@ -37,10 +39,11 @@ final class TableWriter {
 			->addInterface(
 				$this->cg_factory
 				->codegenImplementsInterface(
-					\sprintf('%sInterface', $this->harm->getClassName())
+					Str\format('%sInterface', $this->harm->getClassName())
 				)
 			)
 			->addConst('TABLE_NAME', $this->harm->getTableName())
+			->addConst('SEQUENCE_NAME', $this->harm->getSequenceName())
 			->addProperty(
 				$this->cg_factory
 					->codegenProperty($this->harm->getPrimaryKeyName())
@@ -105,7 +108,7 @@ final class TableWriter {
 		$attribute_dirty_tags = '';
 
 		foreach ($attributes as $attribute) {
-			$attribute_dirty_tags .= \sprintf('\'%s\' => false,', $attribute->getName());
+			$attribute_dirty_tags .= Str\format('\'%s\' => false,', $attribute->getName());
 		}
 
 		$this->class->addMethod(
@@ -131,14 +134,14 @@ final class TableWriter {
 				->setBodyf(
 					"%s\n%s\n\t%s\n%s\n%s\n%s\n%s\n%s",
 					'$dirty_for_write = $this->getDirtyForWrite();',
-					\sprintf('if ($this->%s != 0) {', $keyname),
-					\sprintf('$dirty_for_write->add(Pair{\'%s\', (string) $this->%s});', $keyname, $keyname),
+					Str\format('if ($this->%s != 0) {', $keyname),
+					Str\format('$dirty_for_write->add(Pair{\'%s\', (string) $this->%s});', $keyname, $keyname),
 					'}',
-					\sprintf(
-						'$this->database->query(\'INSERT INTO %s (\'.implode(\', \', $dirty_for_write->keys()).\') VALUES (\\\'\'.implode(\'\\\', \\\'\', $dirty_for_write->values()).\'\\\')\');',
+					Str\format(
+						'$this->database->query(\'INSERT INTO %s (\'.\implode(\', \', $dirty_for_write->keys()).\') VALUES (\\\'\'.\implode(\'\\\', \\\'\', $dirty_for_write->values()).\'\\\')\');',
 						$this->harm->getTableName(),
 					),
-					'$this->id = $this->database->getLastInsertedId();',
+					'$this->id = $this->database->getLastInsertedId(static::SEQUENCE_NAME);',
 					'$this->data_loaded = true;',
 					'$this->startDirtyTagging();'
 				)
@@ -163,8 +166,8 @@ final class TableWriter {
 					'if ($attribute_cast_list->count() === 0) {',
 					'return;',
 					'}',
-					\sprintf(
-						'$this->database->query(\'UPDATE %s SET \'.implode(\', \', $attribute_cast_list).\' WHERE %s = \'.$this->getId());',
+					Str\format(
+						'$this->database->query(\'UPDATE %s SET \'.\implode(\', \', $attribute_cast_list).\' WHERE %s = \'.$this->getId());',
 						$this->harm->getTableName(),
 						$this->harm->getPrimaryKeyName(),
 					)
@@ -208,10 +211,10 @@ final class TableWriter {
 			$this->cg_factory
 				->codegenMethod('getById')
 				->addParameter('int $id')
-				->setReturnType(\sprintf('?%sInterface', $this->harm->getClassName()))
+				->setReturnType(Str\format('?%sInterface', $this->harm->getClassName()))
 				->setBodyf(
 					"%s\n%s\n%s\n%s\n\t%s\n%s\n%s\n%s",
-					\sprintf(
+					Str\format(
 						'$query = \'SELECT %s FROM %s WHERE %s = \'.$id;',
 						\implode(',', $attribute_list),
 						$this->harm->getTableName(),
@@ -254,10 +257,10 @@ final class TableWriter {
 				->addParameter('?string $condition = null')
 				->addParameter('?string $order = null')
 				->addParameter('?string $addendum = null')
-				->setReturnType(\sprintf('Vector<%sInterface>', $this->harm->getClassName()))
+				->setReturnType(Str\format('Vector<%sInterface>', $this->harm->getClassName()))
 				->setBodyf(
 					"%s\n%s\n%s\n%s\n%s\n%s\n%s\n\t%s\n\t%s\n\t%s\n%s\n%s",
-					\sprintf('$query = \'SELECT %s FROM %s\';', \implode(',', $attribute_list), $this->harm->getTableName()),
+					Str\format('$query = \'SELECT %s FROM %s\';', \implode(',', $attribute_list), $this->harm->getTableName()),
 					'if ($condition !== null) $query .= \' WHERE \'.$condition;',
 					'if ($order !== null) $query .= \' ORDER BY \'.$order;',
 					'if ($addendum !== null) $query .= \' \'.$addendum;',
@@ -278,7 +281,7 @@ final class TableWriter {
 			$this->cg_factory
 				->codegenMethod('findObject')
 				->addParameter('?string $condition = null')
-				->setReturnType(\sprintf('%sInterface', $this->harm->getClassName()))
+				->setReturnType(Str\format('%sInterface', $this->harm->getClassName()))
 				->setBodyf(
 					"%s\n%s\n\t%s\n%s\n%s",
 					'$iterator = $this->getObjectsBy($condition, null, \'LIMIT 1\');',
@@ -309,9 +312,13 @@ final class TableWriter {
 				->addParameter('?string $condition = null')
 				->setReturnType('int')
 				->setBodyf(
-					"%s\n%s",
-					'$condition !== null ? $condition = sprintf(\'WHERE %s\', $condition) : $condition = \'\';',
-					\sprintf('return $this->database->count(sprintf(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $condition));', $this->harm->getPrimaryKeyName()),
+					"%s\n  %s\n%s\n  %s\n%s\n%s",
+					'if ($condition !== null) {',
+					'$condition = Str\format(\'WHERE %s\', $condition);',
+					'} else {',
+					'$condition = \'\';',
+					'}',
+					Str\format('return $this->database->count(Str\format(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $condition));', $this->harm->getPrimaryKeyName()),
 				)
 		);
 	}
@@ -323,9 +330,13 @@ final class TableWriter {
 				->addParameter('?string $condition = null')
 				->setReturnType('bool')
 				->setBodyf(
-					"%s\n%s",
-					'$condition !== null ? $condition = sprintf(\'WHERE %s\', $condition) : $condition = \'\';',
-					'return $this->database->exists(sprintf(\'SELECT 1 FROM %s %s\', $this->getTableName(), $condition));',
+					"%s\n  %s\n%s\n  %s\n%s\n%s",
+					'if ($condition !== null) {',
+					'$condition = Str\format(\'WHERE %s\', $condition);',
+					'} else {',
+					'$condition = \'\';',
+					'}',
+					'return $this->database->exists(Str\format(\'SELECT 1 FROM %s %s\', $this->getTableName(), $condition));',
 				)
 		);
 	}
@@ -352,7 +363,7 @@ final class TableWriter {
 
 			$this->class->addMethod(
 				$this->cg_factory
-					->codegenMethod(\sprintf('get%s', $accessor_name))
+					->codegenMethod(Str\format('get%s', $accessor_name))
 					->setReturnType($attribute->getWriteTypeHint())
 					->setBodyf(
 						'return $this->%s;',
@@ -361,13 +372,13 @@ final class TableWriter {
 			);
 			$this->class->addMethod(
 				$this->cg_factory
-					->codegenMethod(\sprintf('set%s', $accessor_name))
-					->addParameter(\sprintf('%s $value', $attribute->getWriteTypeHint()))
+					->codegenMethod(Str\format('set%s', $accessor_name))
+					->addParameter(Str\format('%s $value', $attribute->getWriteTypeHint()))
 					->setReturnType('void')
 					->setBodyf(
 						"%s\n%s",
-						\sprintf('$this->tagDirty(\'%s\');', $attribute_name),
-						\sprintf('$this->%s = $value;', $attribute_name)
+						Str\format('$this->tagDirty(\'%s\');', $attribute_name),
+						Str\format('$this->%s = $value;', $attribute_name)
 					)
 			);
 		}
@@ -414,7 +425,7 @@ final class TableWriter {
 		$this->class->addMethod(
 			$this->cg_factory
 				->codegenMethod('__construct')
-				->addParameter('private HaDb\DatabaseInterface $database')
+				->addParameter('private HaDb\DatabaseAdapterInterface $database')
 				->setReturnType('void')
 				->setBody('$this->startDirtyTagging();')
 		);
@@ -425,7 +436,7 @@ final class TableWriter {
 		$body = '';
 
 		foreach ($this->harm->getAttributes() as $attribute) {
-			$body .= \sprintf(
+			$body .= Str\format(
 				'$this->set%s((%s) %s);'."\n",
 				$attribute->getAccessorName(),
 				$attribute->getWriteTypeHint(),
@@ -442,7 +453,7 @@ final class TableWriter {
 					"%s\n%s\n%s\n%s\n%s",
 					'$this->data_loaded = true;',
 					'$this->modified = false;',
-					\sprintf('$this->%s = (int) $data[\'%s\'];', $keyname, $keyname),
+					Str\format('$this->%s = (int) $data[\'%s\'];', $keyname, $keyname),
 					$body,
 					'$this->startDirtyTagging();'
 				)

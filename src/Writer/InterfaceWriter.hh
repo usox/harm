@@ -1,6 +1,7 @@
 <?hh // strict
 namespace Usox\HaRm\Writer;
 
+use HH\Lib\Str;
 use Usox\HaRm\Generator\HarmGenerator;
 use Facebook\HackCodegen\HackCodegenFactory;
 use Facebook\HackCodegen\HackCodegenConfig;
@@ -22,7 +23,7 @@ final class InterfaceWriter {
 
 		$this->file = $this->cg_factory
 			->codegenFile(
-				\sprintf('%sInterface.hh', $this->harm->getClassName())
+				Str\format('%sInterface.hh', $this->harm->getClassName())
 			)
 			->setDoClobber(true)
 			->setFileType(CodegenFileType::HACK_STRICT)
@@ -32,7 +33,7 @@ final class InterfaceWriter {
 
 		$this->class = $this->cg_factory
 			->codegenInterface(
-				\sprintf('%sInterface', $this->harm->getClassName())
+				Str\format('%sInterface', $this->harm->getClassName())
 			);
 	}
 
@@ -93,7 +94,7 @@ final class InterfaceWriter {
 				->codegenMethod('findObject')
 				->addParameter('?string $condition = null')
 				->setReturnType(
-					\sprintf('%sInterface', $classname)
+					Str\format('%sInterface', $classname)
 				)
 		);
 		$this->class->addMethod(
@@ -103,7 +104,7 @@ final class InterfaceWriter {
 				->addParameter('?string $order = null')
 				->addParameter('?string $addendum = null')
 				->setReturnType(
-					\sprintf('Vector<%sInterface>', $classname)
+					Str\format('Vector<%sInterface>', $classname)
 				)
 		);
 		$this->class->addMethod(
@@ -111,7 +112,7 @@ final class InterfaceWriter {
 				->codegenMethod('getById')
 				->addParameter('int $id')
 				->setReturnType(
-					\sprintf('?%sInterface', $classname)
+					Str\format('?%sInterface', $classname)
 				)
 		);
 		$this->class->addMethod(
@@ -126,16 +127,16 @@ final class InterfaceWriter {
 			$this->class->addMethod(
 				$this->cg_factory
 					->codegenMethod(
-						\sprintf('get%s', $accessor_name)
+						Str\format('get%s', $accessor_name)
 					)
 					->setReturnType($readcast)
 			);
 			$this->class->addMethod(
 				$this->cg_factory
 					->codegenMethod(
-						\sprintf('set%s', $accessor_name)
+						Str\format('set%s', $accessor_name)
 					)
-					->addParameter(\sprintf('%s $value', $readcast))
+					->addParameter(Str\format('%s $value', $readcast))
 					->setReturnType('void')
 			);
 		}

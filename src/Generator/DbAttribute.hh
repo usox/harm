@@ -47,7 +47,7 @@ final class DbAttribute {
 			case 'numeric':
 				return '(string) '.$attribute;
 			case 'timestamp':
-				return '(string) date(DATE_ATOM, '.$attribute.')';
+				return '(string) \date(\DATE_ATOM, '.$attribute.')';
 			default:
 				return '$this->database->quote('.$attribute.')';
 		}
@@ -69,7 +69,7 @@ final class DbAttribute {
 	public function getReadCast(string $attribute): string {
 		switch ($this->type) {
 		case 'timestamp':
-			return 'strtotime('.$attribute.')';
+			return '\strtotime('.$attribute.')';
 		default:
 			return $attribute;
 		}

@@ -17,9 +17,10 @@
 		}
 	],
 	"require": {
-		"hhvm": ">=3.24",
-		"usox/hadb": "^2",
-		"facebook/hack-codegen": "^3"
+		"hhvm": ">=3.26",
+		"usox/hadb": "dev-master",
+		"facebook/hack-codegen": "^3",
+		"hhvm/hsl": "^1.4"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^5",
