@@ -20,7 +20,7 @@
 		"hhvm": ">=3.26",
 		"usox/hadb": "dev-master",
 		"facebook/hack-codegen": "^3",
-		"hhvm/hsl": "^1.4"
+		"hhvm/hsl": "^3.26"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^5",
