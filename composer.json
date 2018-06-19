@@ -18,7 +18,7 @@
 	],
 	"require": {
 		"hhvm": ">=3.27",
-		"usox/hadb": "dev-master",
+		"usox/hadb": "^3",
 		"facebook/hack-codegen": "^3",
 		"hhvm/type-assert": "^3.1",
 		"hhvm/hsl": "^3.27"
