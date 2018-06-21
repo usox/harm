@@ -138,7 +138,7 @@ final class TableWriter {
 					Str\format('$dirty_for_write->add(Pair{\'%s\', (string) $this->%s});', $keyname, $keyname),
 					'}',
 					Str\format(
-						'$this->database->query(\'INSERT INTO %s (\'.\implode(\', \', $dirty_for_write->keys()).\') VALUES (\\\'\'.\implode(\'\\\', \\\'\', $dirty_for_write->values()).\'\\\')\');',
+						'$this->database->query(\'INSERT INTO %s (\'.\implode(\', \', $dirty_for_write->keys()).\') VALUES (\'.\implode(\', \', $dirty_for_write->values()).\')\');',
 						$this->harm->getTableName(),
 					),
 					'$this->id = $this->database->getLastInsertedId(static::SEQUENCE_NAME);',
@@ -161,7 +161,7 @@ final class TableWriter {
 					'}',
 					'$attribute_cast_list = Vector{};',
 					'foreach ($this->getDirtyForWrite() as $field => $value) {',
-					'$attribute_cast_list[] = $field.\' = \\\'\'.(string) $value.\'\\\'\';',
+					'$attribute_cast_list[] = $field.\' = \'.(string) $value;',
 					'}',
 					'if ($attribute_cast_list->count() === 0) {',
 					'return;',

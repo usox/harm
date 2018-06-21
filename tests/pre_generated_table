@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<c516afb452683745f59b80c101cb66e4>>
+ * @generated SignedSource<<82c22d3d91405cb3af9a7029b398036b>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb;
@@ -226,7 +226,7 @@ final class Sample
     }
     $attribute_cast_list = Vector{};
     foreach ($this->getDirtyForWrite() as $field => $value) {
-    	$attribute_cast_list[] = $field.' = \''.(string) $value.'\'';
+    	$attribute_cast_list[] = $field.' = '.(string) $value;
     }
     if ($attribute_cast_list->count() === 0) {
     	return;
@@ -239,7 +239,7 @@ final class Sample
     if ($this->id != 0) {
     	$dirty_for_write->add(Pair{'id', (string) $this->id});
     }
-    $this->database->query('INSERT INTO sample ('.\implode(', ', $dirty_for_write->keys()).') VALUES (\''.\implode('\', \'', $dirty_for_write->values()).'\')');
+    $this->database->query('INSERT INTO sample ('.\implode(', ', $dirty_for_write->keys()).') VALUES ('.\implode(', ', $dirty_for_write->values()).')');
     $this->id = $this->database->getLastInsertedId(static::SEQUENCE_NAME);
     $this->data_loaded = true;
     $this->startDirtyTagging();
