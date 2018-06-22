@@ -47,7 +47,7 @@ final class DbAttribute {
 			case 'numeric':
 				return '(string) '.$attribute;
 			case 'timestamp':
-				return '(string) \date(\DATE_ATOM, '.$attribute.')';
+				return '$this->database->quote((string) \date(\DATE_ATOM, '.$attribute.'))';
 			default:
 				return '$this->database->quote('.$attribute.')';
 		}

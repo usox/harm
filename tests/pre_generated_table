@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<82c22d3d91405cb3af9a7029b398036b>>
+ * @generated SignedSource<<3bbbfccccdd3cc82889144a2e1a5f9d8>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb;
@@ -208,7 +208,7 @@ final class Sample
     	$attributes['text_field'] = $this->text_field === null ? 'null' : $this->database->quote($this->text_field);
     }
     if ($this->isDirty('date_field')) {
-    	$attributes['date_field'] = $this->date_field === null ? 'null' : (string) \date(\DATE_ATOM, $this->date_field);
+    	$attributes['date_field'] = $this->date_field === null ? 'null' : $this->database->quote((string) \date(\DATE_ATOM, $this->date_field));
     }
     if ($this->isDirty('remote_addr_field')) {
     	$attributes['remote_addr_field'] = $this->remote_addr_field === null ? 'null' : $this->database->quote($this->remote_addr_field);
