@@ -1,10 +1,10 @@
 <?hh // strict
 namespace Usox\HaRm\Generator;
 
-use HH\Lib\Str;
-use Usox\HaRm\Writer\TableWriter;
-use Usox\HaRm\Writer\InterfaceWriter;
-use Usox\HaRm\Exception;
+use namespace HH\Lib\Str;
+use type Usox\HaRm\Writer\TableWriter;
+use type Usox\HaRm\Writer\InterfaceWriter;
+use namespace Usox\HaRm\Exception;
 
 final class HarmGenerator {
 

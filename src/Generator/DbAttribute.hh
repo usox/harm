@@ -1,7 +1,7 @@
 <?hh // strict
 namespace Usox\HaRm\Generator;
 
-use Facebook\HackCodegen as codegen;
+use namespace Facebook\HackCodegen as codegen;
 
 final class DbAttribute {
 

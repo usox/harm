@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<3bbbfccccdd3cc82889144a2e1a5f9d8>>
+ * @generated SignedSource<<effbe835dffab85cda4a0bbeadae7a3e>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb;
@@ -165,9 +165,9 @@ final class Sample
     ?string $addendum = null,
   ): Vector<SampleInterface> {
     $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field,id FROM sample';
-    if ($condition !== null) $query .= ' WHERE '.$condition;
-    if ($order !== null) $query .= ' ORDER BY '.$order;
-    if ($addendum !== null) $query .= ' '.$addendum;
+    if ($condition !== null) { $query .= ' WHERE '.$condition; }
+    if ($order !== null) { $query .= ' ORDER BY '.$order; }
+    if ($addendum !== null) { $query .= ' '.$addendum; }
     $query_result = $this->database->query($query);
     $results = Vector{};
     while ($result = $this->database->getNextResult($query_result)) {
@@ -236,7 +236,7 @@ final class Sample
 
   private function insert(): void {
     $dirty_for_write = $this->getDirtyForWrite();
-    if ($this->id != 0) {
+    if ($this->id !== 0) {
     	$dirty_for_write->add(Pair{'id', (string) $this->id});
     }
     $this->database->query('INSERT INTO sample ('.\implode(', ', $dirty_for_write->keys()).') VALUES ('.\implode(', ', $dirty_for_write->values()).')');

@@ -1,14 +1,13 @@
 <?hh // strict
 namespace Usox\HaRm\Writer;
 
-use HH\Lib\Str;
-use Usox\HaRm\Generator\HarmGenerator;
-use Usox\HaRm\Generator\DbAttribute;
-use Facebook\HackCodegen\HackCodegenFactory;
-use Facebook\HackCodegen\HackCodegenConfig;
-use Facebook\HackCodegen\CodegenFileType;
-use Facebook\HackCodegen\CodegenFile;
-use Facebook\HackCodegen\CodegenClass;
+use namespace HH\Lib\Str;
+use type Usox\HaRm\Generator\HarmGenerator;
+use type Usox\HaRm\Generator\DbAttribute;
+use type Facebook\HackCodegen\HackCodegenFactory;
+use type Facebook\HackCodegen\HackCodegenConfig;
+use type Facebook\HackCodegen\CodegenFile;
+use type Facebook\HackCodegen\CodegenClass;
 
 final class TableWriter {
 
@@ -134,7 +133,7 @@ final class TableWriter {
 				->setBodyf(
 					"%s\n%s\n\t%s\n%s\n%s\n%s\n%s\n%s",
 					'$dirty_for_write = $this->getDirtyForWrite();',
-					Str\format('if ($this->%s != 0) {', $keyname),
+					Str\format('if ($this->%s !== 0) {', $keyname),
 					Str\format('$dirty_for_write->add(Pair{\'%s\', (string) $this->%s});', $keyname, $keyname),
 					'}',
 					Str\format(
@@ -261,9 +260,9 @@ final class TableWriter {
 				->setBodyf(
 					"%s\n%s\n%s\n%s\n%s\n%s\n%s\n\t%s\n\t%s\n\t%s\n%s\n%s",
 					Str\format('$query = \'SELECT %s FROM %s\';', \implode(',', $attribute_list), $this->harm->getTableName()),
-					'if ($condition !== null) $query .= \' WHERE \'.$condition;',
-					'if ($order !== null) $query .= \' ORDER BY \'.$order;',
-					'if ($addendum !== null) $query .= \' \'.$addendum;',
+					'if ($condition !== null) { $query .= \' WHERE \'.$condition; }',
+					'if ($order !== null) { $query .= \' ORDER BY \'.$order; }',
+					'if ($addendum !== null) { $query .= \' \'.$addendum; }',
 					'$query_result = $this->database->query($query);',
 					'$results = Vector{};',
 					'while ($result = $this->database->getNextResult($query_result)) {',
