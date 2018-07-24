@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<bd2c68c704c140bc74aca6dae1ea2705>>
+ * @generated SignedSource<<e536635c9bc383af026cd20f3a90b6bf>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb;
@@ -116,15 +116,6 @@ final class Sample
     $this->remote_addr_field = $value;
   }
 
-  public function getId(): int {
-    return $this->id;
-  }
-
-  public function setId(int $value): void {
-    $this->tagDirty('id');
-    $this->id = $value;
-  }
-
   public function delete(): void {
     $this->database->query('DELETE FROM sample WHERE id = '.$this->getId());
   }
@@ -164,7 +155,7 @@ final class Sample
     ?string $order = null,
     ?string $addendum = null,
   ): vec<SampleInterface> {
-    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field,id FROM sample';
+    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field FROM sample';
     if ($condition !== null) { $query .= ' WHERE '.$condition; }
     if ($order !== null) { $query .= ' ORDER BY '.$order; }
     if ($addendum !== null) { $query .= ' '.$addendum; }
@@ -179,7 +170,7 @@ final class Sample
   }
 
   public function getById(int $id): ?SampleInterface {
-    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field,id FROM sample WHERE id = '.$id;
+    $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field FROM sample WHERE id = '.$id;
     $object = new self($this->database);
     $data = $this->database->getNextResult($this->database->query($query));
     if ($data === null) {
@@ -213,9 +204,6 @@ final class Sample
     if ($this->isDirty('remote_addr_field')) {
     	$attributes['remote_addr_field'] = $this->remote_addr_field === null ? 'null' : $this->database->quote($this->remote_addr_field);
     }
-    if ($this->isDirty('id')) {
-    	$attributes['id'] = $this->id === null ? 'null' : (string) $this->id;
-    }
 
     return $attributes;
   }
@@ -236,9 +224,6 @@ final class Sample
 
   private function insert(): void {
     $dirty_for_write = $this->getDirtyForWrite();
-    if ($this->id !== 0) {
-    	$dirty_for_write['id'] = (string) $this->id;
-    }
     $this->database->query('INSERT INTO sample ('.Str\join(Vec\keys($dirty_for_write), ', ').') VALUES ('.Str\join($dirty_for_write, ', ').')');
     $this->id = $this->database->getLastInsertedId(static::SEQUENCE_NAME);
     $this->data_loaded = true;
@@ -246,7 +231,7 @@ final class Sample
   }
 
   private function startDirtyTagging(): void {
-    $this->dirty = dict['integer_field' => false,'int2_field' => false,'float_field' => false,'text_field' => false,'date_field' => false,'remote_addr_field' => false,'id' => false,];
+    $this->dirty = dict['integer_field' => false,'int2_field' => false,'float_field' => false,'text_field' => false,'date_field' => false,'remote_addr_field' => false,];
   }
 
   private function tagDirty(string $attribute): void {
@@ -256,5 +241,9 @@ final class Sample
 
   private function isDirty(string $attribute): bool {
     return $this->dirty[$attribute] === true;
+  }
+
+  public function getId(): int {
+    return $this->id;
   }
 }

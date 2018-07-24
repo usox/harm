@@ -1,7 +1,7 @@
 <?hh // strict
 namespace Usox\HaRm\Generator;
 
-use namespace HH\Lib\Str;
+use namespace HH\Lib\{C, Str};
 use type Usox\HaRm\Writer\TableWriter;
 use type Usox\HaRm\Writer\InterfaceWriter;
 use namespace Usox\HaRm\Exception;
@@ -10,16 +10,17 @@ final class HarmGenerator {
 
 	public string $class_name = '';
 
-	public Vector<DbAttribute> $attributes;
+	public vec<DbAttribute> $attributes = vec[];
 
-	public string $primary_key_name = '';
+	public ?DbAttribute $primary_key;
 
 	public string $namespace_name = '';
 
 	public string $table_name = '';
 
+	private vec<string> $allowed_types = vec['int', 'int2', 'float', 'text', 'timestamp', 'inet'];
+
 	public function __construct(private string $config_file_path): void {
-		$this->attributes = Vector{};
 	}
 
 	public function parseConfigFile(): void {
@@ -30,9 +31,6 @@ final class HarmGenerator {
 		}
 
 		$config_file = \file($this->config_file_path);
-		$allowed_types = new Vector([
-			'int', 'int2', 'float', 'text', 'timestamp', 'inet'
-		]);
 
 		foreach ($config_file as $line) {
 			if (\strpos($line, '#') === 0) {
@@ -51,7 +49,7 @@ final class HarmGenerator {
 					$this->class_name = $config_value;
 					break;
 				case 'key':
-					$this->primary_key_name = $config_value;
+					$this->primary_key = new DbAttribute(Str\trim($config_value), 'int');
 					break;
 				case 'namespace':
 					$this->namespace_name = $config_value;
@@ -61,12 +59,10 @@ final class HarmGenerator {
 						throw new Exception\InvalidAttributeDeclarationException($config_value);
 					}
 					list($attribute_name, $attribute_type) = \explode(':', $config_value, 2);
-					if ($allowed_types->linearSearch($attribute_type) === -1) {
+					if (C\contains($this->allowed_types, $attribute_type) === false) {
 						throw new Exception\InvalidAttributeTypeException($attribute_type);
 					}
-					$this->attributes->add(
-						new DbAttribute(\trim($attribute_name), \trim($attribute_type))
-					);
+					$this->attributes[] = new DbAttribute(\trim($attribute_name), \trim($attribute_type));
 					break;
 				default:
 					throw new Exception\UnknownHarmFileKeyException(
@@ -94,8 +90,9 @@ final class HarmGenerator {
 		return $this->class_name;
 	}
 
-	public function getPrimaryKeyName(): string {
-		return $this->primary_key_name;
+	public function getPrimaryKey(): DbAttribute {
+		invariant($this->primary_key !== null, 'No primary key defined');
+		return $this->primary_key;
 	}
 
 	public function getTableName(): string {
@@ -106,11 +103,11 @@ final class HarmGenerator {
 		return Str\format(
 			'%s_%s_seq',
 			$this->getTableName(),
-			$this->getPrimaryKeyName()
+			$this->getPrimaryKey()->getName()
 		);
 	}
 
-	public function getAttributes(): Vector<DbAttribute> {
+	public function getAttributes(): vec<DbAttribute> {
 		return $this->attributes;
 	}
 }

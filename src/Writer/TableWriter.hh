@@ -45,7 +45,7 @@ final class TableWriter {
 			->addConst('SEQUENCE_NAME', $this->harm->getSequenceName())
 			->addProperty(
 				$this->cg_factory
-					->codegenProperty($this->harm->getPrimaryKeyName())
+					->codegenProperty($this->harm->getPrimaryKey()->getName())
 					->setType('int')
 					->setValue(0)
 			)
@@ -97,6 +97,7 @@ final class TableWriter {
 		$this->writeInsert();
 		$this->writeStartDirtyTaggingWriter();
 		$this->writeFooter();
+		$this->writePrimaryKeyGetter();
 
 		$this->file->addClass($this->class);
 		echo $this->file->render();
@@ -123,24 +124,19 @@ final class TableWriter {
 	}
 
 	private function writeInsert(): void {
-		$keyname = $this->harm->getPrimaryKeyName();
-
 		$this->class->addMethod(
 			$this->cg_factory
 				->codegenMethod('insert')
 				->setReturnType('void')
 				->setPrivate()
 				->setBodyf(
-					"%s\n%s\n\t%s\n%s\n%s\n%s\n%s\n%s",
+					"%s\n%s\n%s\n%s\n%s",
 					'$dirty_for_write = $this->getDirtyForWrite();',
-					Str\format('if ($this->%s !== 0) {', $keyname),
-					Str\format('$dirty_for_write[\'%s\'] = (string) $this->%s;', $keyname, $keyname),
-					'}',
 					Str\format(
 						'$this->database->query(\'INSERT INTO %s (\'.Str\join(Vec\keys($dirty_for_write), \', \').\') VALUES (\'.Str\join($dirty_for_write, \', \').\')\');',
 						$this->harm->getTableName(),
 					),
-					'$this->id = $this->database->getLastInsertedId(static::SEQUENCE_NAME);',
+					Str\format('$this->%s = $this->database->getLastInsertedId(static::SEQUENCE_NAME);', $this->harm->getPrimaryKey()->getName()),
 					'$this->data_loaded = true;',
 					'$this->startDirtyTagging();'
 				)
@@ -168,7 +164,7 @@ final class TableWriter {
 					Str\format(
 						'$this->database->query(\'UPDATE %s SET \'.Str\join($attribute_cast_list, \', \').\' WHERE %s = \'.$this->getId());',
 						$this->harm->getTableName(),
-						$this->harm->getPrimaryKeyName(),
+						$this->harm->getPrimaryKey()->getName(),
 					)
 				)
 		);
@@ -201,7 +197,7 @@ final class TableWriter {
 
 	private function writeGetById(): void {
 		$attribute_list = Vec\concat(
-			vec[$this->harm->getPrimaryKeyName()],
+			vec[$this->harm->getPrimaryKey()->getName()],
 			Vec\map(
 				$this->harm->getAttributes(),
 				(DbAttribute $attribute) ==> $attribute->getDBReadCast()
@@ -219,7 +215,7 @@ final class TableWriter {
 						'$query = \'SELECT %s FROM %s WHERE %s = \'.$id;',
 						Str\join($attribute_list, ','),
 						$this->harm->getTableName(),
-						$this->harm->getPrimaryKeyName(),
+						$this->harm->getPrimaryKey()->getName(),
 					),
 					'$object = new self($this->database);',
 					'$data = $this->database->getNextResult($this->database->query($query));',
@@ -246,7 +242,7 @@ final class TableWriter {
 
 	private function writeGetObjectsBy(): void {
 		$attribute_list = Vec\concat(
-			vec[$this->harm->getPrimaryKeyName()],
+			vec[$this->harm->getPrimaryKey()->getName()],
 			Vec\map(
 				$this->harm->getAttributes(),
 				(DbAttribute $attribute) ==> $attribute->getDBReadCast()
@@ -320,7 +316,7 @@ final class TableWriter {
 					'} else {',
 					'$condition = \'\';',
 					'}',
-					Str\format('return $this->database->count(Str\format(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $condition));', $this->harm->getPrimaryKeyName()),
+					Str\format('return $this->database->count(Str\format(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $condition));', $this->harm->getPrimaryKey()->getName()),
 				)
 		);
 	}
@@ -351,14 +347,13 @@ final class TableWriter {
 				->setBodyf(
 					'$this->database->query(\'DELETE FROM %s WHERE %s = \'.$this->getId());',
 					$this->harm->getTableName(),
-					$this->harm->getPrimaryKeyName()
+					$this->harm->getPrimaryKey()->getName()
 				)
 		);
 	}
 
 	private function writeAttributeAccessors(): void {
 		$attributes = $this->harm->getAttributes();
-		$attributes->add(new DbAttribute($this->harm->getPrimaryKeyName(), 'int'));
 		foreach ($attributes as $attribute) {
 			$accessor_name = $attribute->getAccessorName();
 			$attribute_name = $attribute->getName();
@@ -434,7 +429,7 @@ final class TableWriter {
 	}
 
 	private function writeLoadDataByDatabaseResult(): void {
-		$keyname = $this->harm->getPrimaryKeyName();
+		$keyname = $this->harm->getPrimaryKey()->getName();
 		$body = '';
 
 		foreach ($this->harm->getAttributes() as $attribute) {
@@ -460,6 +455,15 @@ final class TableWriter {
 					'$this->startDirtyTagging();'
 				)
 		);
+	}
+
+	private function writePrimaryKeyGetter(): void {
+		$attribute = $this->harm->getPrimaryKey();
+
+		$this->class->addMethod($this->cg_factory
+			->codegenMethod(Str\format('get%s', $attribute->getAccessorName()))
+			->setReturnType($attribute->getWriteTypeHint())
+			->setBodyf('return $this->%s;', $attribute->getName()));
 	}
 
 	private function writeFooter(): void {
