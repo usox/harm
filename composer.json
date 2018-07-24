@@ -29,8 +29,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Usox\\HaRm\\": "src/",
-			"Usox\\HaRm\\Test\\": "tests/"
+			"Usox\\HaRm\\": ["src/", "tests/"]
 		}
 	}
 }
