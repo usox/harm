@@ -2,11 +2,11 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<effbe835dffab85cda4a0bbeadae7a3e>>
+ * @generated SignedSource<<cd0893c28cea779e1dd6f72c500a1adc>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb;
-use namespace HH\Lib\Str;
+use namespace HH\Lib\{C, Str, Vec};
 
 final class Sample
   implements
@@ -18,7 +18,7 @@ final class Sample
   private int $id = 0;
   private bool $data_loaded = false;
   private bool $modified = false;
-  private Map<string, bool> $dirty;
+  private dict<string, bool> $dirty;
   private int $integer_field = 0;
   private int $int2_field = 0;
   private float $float_field = 0.00;
@@ -148,11 +148,11 @@ final class Sample
   }
 
   public function findObject(?string $condition = null): SampleInterface {
-    $iterator = $this->getObjectsBy($condition, null, 'LIMIT 1');
-    if ($iterator->count() === 0) {
+    $objects = $this->getObjectsBy($condition, null, 'LIMIT 1');
+    if (C\count($objects) === 0) {
     	throw new \Usox\HaRm\Exception\ObjectNotFoundException();
     }
-    return $iterator->items()->getIterator()->current();
+    return C\firstx($objects);
   }
 
   public function quote(string $subject): string {
@@ -163,17 +163,17 @@ final class Sample
     ?string $condition = null,
     ?string $order = null,
     ?string $addendum = null,
-  ): Vector<SampleInterface> {
+  ): vec<SampleInterface> {
     $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field,id FROM sample';
     if ($condition !== null) { $query .= ' WHERE '.$condition; }
     if ($order !== null) { $query .= ' ORDER BY '.$order; }
     if ($addendum !== null) { $query .= ' '.$addendum; }
     $query_result = $this->database->query($query);
-    $results = Vector{};
+    $results = vec[];
     while ($result = $this->database->getNextResult($query_result)) {
     	$obj = new self($this->database);
     	$obj->loadDataByDatabaseResult($result);
-    	$results->add($obj);
+    	$results[] = $obj;
     }
     return $results;
   }
@@ -193,8 +193,8 @@ final class Sample
     $this->database->emptyTable(static::TABLE_NAME);
   }
 
-  private function getDirtyForWrite(): Map<string, string> {
-    $attributes = Map{};
+  private function getDirtyForWrite(): dict<string, string> {
+    $attributes = dict[];
     if ($this->isDirty('integer_field')) {
     	$attributes['integer_field'] = $this->integer_field === null ? 'null' : (string) $this->integer_field;
     }
@@ -221,32 +221,32 @@ final class Sample
   }
 
   private function update(): void {
-    if (!$this->isModified()) {
+    if ($this->modified === false) {
     	return;
     }
-    $attribute_cast_list = Vector{};
+    $attribute_cast_list = vec[];
     foreach ($this->getDirtyForWrite() as $field => $value) {
     	$attribute_cast_list[] = $field.' = '.(string) $value;
     }
-    if ($attribute_cast_list->count() === 0) {
+    if (C\count($attribute_cast_list) === 0) {
     	return;
     }
-    $this->database->query('UPDATE sample SET '.\implode(', ', $attribute_cast_list).' WHERE id = '.$this->getId());
+    $this->database->query('UPDATE sample SET '.Str\join($attribute_cast_list, ', ').' WHERE id = '.$this->getId());
   }
 
   private function insert(): void {
     $dirty_for_write = $this->getDirtyForWrite();
     if ($this->id !== 0) {
-    	$dirty_for_write->add(Pair{'id', (string) $this->id});
+    	$dirty_for_write['id'] = (string) $this->id;
     }
-    $this->database->query('INSERT INTO sample ('.\implode(', ', $dirty_for_write->keys()).') VALUES ('.\implode(', ', $dirty_for_write->values()).')');
+    $this->database->query('INSERT INTO sample ('.Str\join(Vec\keys($dirty_for_write), ', ').') VALUES ('.Str\join($dirty_for_write, ', ').')');
     $this->id = $this->database->getLastInsertedId(static::SEQUENCE_NAME);
     $this->data_loaded = true;
     $this->startDirtyTagging();
   }
 
   private function startDirtyTagging(): void {
-    $this->dirty = new Map(['integer_field' => false,'int2_field' => false,'float_field' => false,'text_field' => false,'date_field' => false,'remote_addr_field' => false,'id' => false,]);
+    $this->dirty = dict['integer_field' => false,'int2_field' => false,'float_field' => false,'text_field' => false,'date_field' => false,'remote_addr_field' => false,'id' => false,];
   }
 
   private function tagDirty(string $attribute): void {
@@ -256,9 +256,5 @@ final class Sample
 
   private function isDirty(string $attribute): bool {
     return $this->dirty[$attribute] === true;
-  }
-
-  private function isModified(): bool {
-    return $this->modified;
   }
 }

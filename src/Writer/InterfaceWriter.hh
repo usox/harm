@@ -104,7 +104,7 @@ final class InterfaceWriter {
 				->addParameter('?string $order = null')
 				->addParameter('?string $addendum = null')
 				->setReturnType(
-					Str\format('Vector<%sInterface>', $classname)
+					Str\format('vec<%sInterface>', $classname)
 				)
 		);
 		$this->class->addMethod(

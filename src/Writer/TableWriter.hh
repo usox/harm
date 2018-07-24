@@ -1,7 +1,7 @@
 <?hh // strict
 namespace Usox\HaRm\Writer;
 
-use namespace HH\Lib\Str;
+use namespace HH\Lib\{Str, Vec};
 use type Usox\HaRm\Generator\HarmGenerator;
 use type Usox\HaRm\Generator\DbAttribute;
 use type Facebook\HackCodegen\HackCodegenFactory;
@@ -27,7 +27,7 @@ final class TableWriter {
 			)
 			->setNamespace($this->harm->getNamespaceName())
 			->useNamespace('Usox\HaDb')
-			->useNamespace('HH\Lib\Str')
+			->useNamespace('HH\Lib\{C, Str, Vec}')
 			->setDoClobber(true);
 
 		$this->class = $this->cg_factory
@@ -64,7 +64,7 @@ final class TableWriter {
 			->addProperty(
 				$this->cg_factory
 					->codegenProperty('dirty')
-					->setType('Map<string, bool>')
+					->setType('dict<string, bool>')
 			);
 	}
 
@@ -116,7 +116,7 @@ final class TableWriter {
 				->setReturnType('void')
 				->setPrivate()
 				->setBodyf(
-					'$this->dirty = new Map([%s]);',
+					'$this->dirty = dict[%s];',
 					$attribute_dirty_tags
 				)
 		);
@@ -134,10 +134,10 @@ final class TableWriter {
 					"%s\n%s\n\t%s\n%s\n%s\n%s\n%s\n%s",
 					'$dirty_for_write = $this->getDirtyForWrite();',
 					Str\format('if ($this->%s !== 0) {', $keyname),
-					Str\format('$dirty_for_write->add(Pair{\'%s\', (string) $this->%s});', $keyname, $keyname),
+					Str\format('$dirty_for_write[\'%s\'] = (string) $this->%s;', $keyname, $keyname),
 					'}',
 					Str\format(
-						'$this->database->query(\'INSERT INTO %s (\'.\implode(\', \', $dirty_for_write->keys()).\') VALUES (\'.\implode(\', \', $dirty_for_write->values()).\')\');',
+						'$this->database->query(\'INSERT INTO %s (\'.Str\join(Vec\keys($dirty_for_write), \', \').\') VALUES (\'.Str\join($dirty_for_write, \', \').\')\');',
 						$this->harm->getTableName(),
 					),
 					'$this->id = $this->database->getLastInsertedId(static::SEQUENCE_NAME);',
@@ -155,18 +155,18 @@ final class TableWriter {
 				->setPrivate()
 				->setBodyf(
 					"%s\n\t%s\n%s\n%s\n%s\n\t%s\n%s\n%s\n\t%s\n%s\n%s",
-					'if (!$this->isModified()) {',
+					'if (!$this->modified) {',
 					'return;',
 					'}',
-					'$attribute_cast_list = Vector{};',
+					'$attribute_cast_list = vec[];',
 					'foreach ($this->getDirtyForWrite() as $field => $value) {',
 					'$attribute_cast_list[] = $field.\' = \'.(string) $value;',
 					'}',
-					'if ($attribute_cast_list->count() === 0) {',
+					'if (C\count($attribute_cast_list) === 0) {',
 					'return;',
 					'}',
 					Str\format(
-						'$this->database->query(\'UPDATE %s SET \'.\implode(\', \', $attribute_cast_list).\' WHERE %s = \'.$this->getId());',
+						'$this->database->query(\'UPDATE %s SET \'.Str\join($attribute_cast_list, \', \').\' WHERE %s = \'.$this->getId());',
 						$this->harm->getTableName(),
 						$this->harm->getPrimaryKeyName(),
 					)
@@ -188,11 +188,11 @@ final class TableWriter {
 		$this->class->addMethod(
 			$this->cg_factory
 				->codegenMethod('getDirtyForWrite')
-				->setReturnType('Map<string, string>')
+				->setReturnType('dict<string, string>')
 				->setPrivate()
 				->setBodyf(
 					"%s\n%s\n%s",
-					'$attributes = Map{};',
+					'$attributes = dict[];',
 					$body,
 					'return $attributes;'
 				)
@@ -200,11 +200,13 @@ final class TableWriter {
 	}
 
 	private function writeGetById(): void {
-		$attribute_list = Vector{};
-		$attribute_list[] = $this->harm->getPrimaryKeyName();
-		foreach ($this->harm->getAttributes() as $attribute) {
-			$attribute_list[] = $attribute->getDBReadCast();
-		}
+		$attribute_list = Vec\concat(
+			vec[$this->harm->getPrimaryKeyName()],
+			Vec\map(
+				$this->harm->getAttributes(),
+				(DbAttribute $attribute) ==> $attribute->getDBReadCast()
+			)
+		);
 		
 		$this->class->addMethod(
 			$this->cg_factory
@@ -215,7 +217,7 @@ final class TableWriter {
 					"%s\n%s\n%s\n%s\n\t%s\n%s\n%s\n%s",
 					Str\format(
 						'$query = \'SELECT %s FROM %s WHERE %s = \'.$id;',
-						\implode(',', $attribute_list),
+						Str\join($attribute_list, ','),
 						$this->harm->getTableName(),
 						$this->harm->getPrimaryKeyName(),
 					),
@@ -243,12 +245,13 @@ final class TableWriter {
 	}
 
 	private function writeGetObjectsBy(): void {
-
-		$attribute_list = Vector{};
-		$attribute_list[] = $this->harm->getPrimaryKeyName();
-		foreach ($this->harm->getAttributes() as $attribute) {
-			$attribute_list[] = $attribute->getDBReadCast();
-		}
+		$attribute_list = Vec\concat(
+			vec[$this->harm->getPrimaryKeyName()],
+			Vec\map(
+				$this->harm->getAttributes(),
+				(DbAttribute $attribute) ==> $attribute->getDBReadCast()
+			)
+		);
 		
 		$this->class->addMethod(
 			$this->cg_factory
@@ -256,19 +259,19 @@ final class TableWriter {
 				->addParameter('?string $condition = null')
 				->addParameter('?string $order = null')
 				->addParameter('?string $addendum = null')
-				->setReturnType(Str\format('Vector<%sInterface>', $this->harm->getClassName()))
+				->setReturnType(Str\format('vec<%sInterface>', $this->harm->getClassName()))
 				->setBodyf(
 					"%s\n%s\n%s\n%s\n%s\n%s\n%s\n\t%s\n\t%s\n\t%s\n%s\n%s",
-					Str\format('$query = \'SELECT %s FROM %s\';', \implode(',', $attribute_list), $this->harm->getTableName()),
+					Str\join($attribute_list, ',') |> Str\format('$query = \'SELECT %s FROM %s\';', $$, $this->harm->getTableName()),
 					'if ($condition !== null) { $query .= \' WHERE \'.$condition; }',
 					'if ($order !== null) { $query .= \' ORDER BY \'.$order; }',
 					'if ($addendum !== null) { $query .= \' \'.$addendum; }',
 					'$query_result = $this->database->query($query);',
-					'$results = Vector{};',
+					'$results = vec[];',
 					'while ($result = $this->database->getNextResult($query_result)) {',
 					'$obj = new self($this->database);',
 					'$obj->loadDataByDatabaseResult($result);',
-					'$results->add($obj);',
+					'$results[] = $obj;',
 					'}',
 					'return $results;',
 				)
@@ -283,11 +286,11 @@ final class TableWriter {
 				->setReturnType(Str\format('%sInterface', $this->harm->getClassName()))
 				->setBodyf(
 					"%s\n%s\n\t%s\n%s\n%s",
-					'$iterator = $this->getObjectsBy($condition, null, \'LIMIT 1\');',
-					'if ($iterator->count() === 0) {',
+					'$objects = $this->getObjectsBy($condition, null, \'LIMIT 1\');',
+					'if (C\count($objects) === 0) {',
 					'throw new \Usox\HaRm\Exception\ObjectNotFoundException();',
 					'}',
-					'return $iterator->items()->getIterator()->current();'
+					'return C\firstx($objects);'
 				)
 		);
 	}
@@ -479,13 +482,6 @@ final class TableWriter {
 				->setReturnType('bool')
 				->setPrivate()
 				->setBody('return $this->dirty[$attribute] === true;')
-		);
-		$this->class->addMethod(
-			$this->cg_factory
-				->codegenMethod('isModified')
-				->setReturnType('bool')
-				->setPrivate()
-				->setBody('return $this->modified;')
 		);
 	}
 }

@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<5ff19f2032a6f519684b5a757fbb2675>>
+ * @generated SignedSource<<384baf7918af1be1865047eb84013de5>>
  */
 namespace Test\ORM;
 
@@ -34,7 +34,7 @@ interface SampleInterface {
     ?string $condition = null,
     ?string $order = null,
     ?string $addendum = null,
-  ): Vector<SampleInterface>;
+  ): vec<SampleInterface>;
 
   public function getById(int $id): ?SampleInterface;
 
