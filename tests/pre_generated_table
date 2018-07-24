@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<cd0893c28cea779e1dd6f72c500a1adc>>
+ * @generated SignedSource<<bd2c68c704c140bc74aca6dae1ea2705>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb;
@@ -221,7 +221,7 @@ final class Sample
   }
 
   private function update(): void {
-    if ($this->modified === false) {
+    if (!$this->modified) {
     	return;
     }
     $attribute_cast_list = vec[];
