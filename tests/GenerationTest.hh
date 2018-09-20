@@ -3,7 +3,7 @@ namespace Usox\HaRm;
 
 use function Facebook\FBExpect\expect;
 
-class GenerationTest extends \Facebook\HackTest\HackTestCase {
+class GenerationTest extends \Facebook\HackTest\HackTest {
 
 	public function testSampleTableGeneration(): void {
 		\ob_start();
