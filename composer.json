@@ -17,15 +17,15 @@
 		}
 	],
 	"require": {
-		"hhvm": ">=3.27",
+		"hhvm": ">=3.28",
 		"usox/hadb": "^3",
 		"facebook/hack-codegen": "^3",
-		"hhvm/hsl": "^3.27",
-		"hhvm/hhast": "^3.27"
+		"hhvm/hsl": "^3.28"
 	},
 	"require-dev": {
 		"facebook/fbexpect": "^2",
-		"hhvm/hacktest": "dev-master"
+		"hhvm/hacktest": "^1.0",
+		"hhvm/hhast": "^3.28"
 	},
 	"autoload": {
 		"psr-4": {
