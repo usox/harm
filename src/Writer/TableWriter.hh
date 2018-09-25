@@ -5,7 +5,6 @@ use namespace HH\Lib\{Str, Vec};
 use type Usox\HaRm\Generator\HarmGenerator;
 use type Usox\HaRm\Generator\DbAttribute;
 use type Facebook\HackCodegen\HackCodegenFactory;
-use type Facebook\HackCodegen\HackCodegenConfig;
 use type Facebook\HackCodegen\CodegenFile;
 use type Facebook\HackCodegen\CodegenClass;
 

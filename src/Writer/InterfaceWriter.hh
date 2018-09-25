@@ -4,7 +4,6 @@ namespace Usox\HaRm\Writer;
 use namespace HH\Lib\Str;
 use type Usox\HaRm\Generator\HarmGenerator;
 use type Facebook\HackCodegen\HackCodegenFactory;
-use type Facebook\HackCodegen\HackCodegenConfig;
 use type Facebook\HackCodegen\CodegenFileType;
 use type Facebook\HackCodegen\CodegenFile;
 use type Facebook\HackCodegen\CodegenInterface;
