@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<e536635c9bc383af026cd20f3a90b6bf>>
+ * @generated SignedSource<<58771f3d6b7aedcf1f51b47bf0496b68>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb;
@@ -161,7 +161,7 @@ final class Sample
     if ($addendum !== null) { $query .= ' '.$addendum; }
     $query_result = $this->database->query($query);
     $results = vec[];
-    while ($result = $this->database->getNextResult($query_result)) {
+    while ($result = $query_result->fetch(\PDO::FETCH_ASSOC)) {
     	$obj = new self($this->database);
     	$obj->loadDataByDatabaseResult($result);
     	$results[] = $obj;
