@@ -18,7 +18,7 @@ final class TableWriter {
 
 	public function __construct(private HarmGenerator $harm): void {
 		$this->cg_factory = new HackCodegenFactory(
-			new HackCodegenConfig()
+			new HarmCodegenConfig()
 		);
 		
 		$this->file = $this->cg_factory
@@ -26,7 +26,6 @@ final class TableWriter {
 				Str\format('%s.hh', $this->harm->getClassName())
 			)
 			->setNamespace($this->harm->getNamespaceName())
-			->useNamespace('Usox\HaDb')
 			->useNamespace('HH\Lib\{C, Str, Vec}')
 			->setDoClobber(true);
 
@@ -132,11 +131,14 @@ final class TableWriter {
 				->setBodyf(
 					"%s\n%s\n%s\n%s\n%s",
 					'$dirty_for_write = $this->getDirtyForWrite();',
-					Str\format(
-						'$this->database->query(\'INSERT INTO %s (\'.Str\join(Vec\keys($dirty_for_write), \', \').\') VALUES (\'.Str\join($dirty_for_write, \', \').\')\');',
-						$this->harm->getTableName(),
-					),
-					Str\format('$this->%s = $this->database->getLastInsertedId(static::SEQUENCE_NAME);', $this->harm->getPrimaryKey()->getName()),
+						Str\format(
+							'$this->database->query(\'INSERT INTO %s (\'.Str\join(Vec\keys($dirty_for_write), \', \').\') VALUES (\'.Str\join($dirty_for_write, \', \').\')\');',
+							$this->harm->getTableName(),
+						),
+						Str\format(
+							'$this->%s = (int) $this->database->lastInsertId(static::SEQUENCE_NAME);',
+							$this->harm->getPrimaryKey()->getName(),
+						),
 					'$this->data_loaded = true;',
 					'$this->startDirtyTagging();'
 				)
@@ -218,8 +220,8 @@ final class TableWriter {
 						$this->harm->getPrimaryKey()->getName(),
 					),
 					'$object = new self($this->database);',
-					'$data = $this->database->getNextResult($this->database->query($query));',
-					'if ($data === null) {',
+					'$data = $this->database->query($query)->fetch(\PDO::FETCH_ASSOC);',
+					'if ($data === false) {',
 					'return null;',
 					'}',
 					'$object->loadDataByDatabaseResult($data);',
@@ -235,7 +237,7 @@ final class TableWriter {
 				->setReturnType('void')
 				->setBodyf(
 					"%s",
-					'$this->database->emptyTable(static::TABLE_NAME);'
+					'$this->database->query(Str\format(\'TRUNCATE TABLE %s\', static::TABLE_NAME));'
 				)
 		);
 	}
@@ -304,21 +306,24 @@ final class TableWriter {
 	}
 
 	private function writeCount(): void {
-		$this->class->addMethod(
-			$this->cg_factory
-				->codegenMethod('count')
-				->addParameter('?string $condition = null')
-				->setReturnType('int')
-				->setBodyf(
-					"%s\n  %s\n%s\n  %s\n%s\n%s",
-					'if ($condition !== null) {',
-					'$condition = Str\format(\'WHERE %s\', $condition);',
-					'} else {',
-					'$condition = \'\';',
-					'}',
-					Str\format('return $this->database->count(Str\format(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $condition));', $this->harm->getPrimaryKey()->getName()),
-				)
-		);
+		$this->class
+			->addMethod(
+				$this->cg_factory
+					->codegenMethod('count')
+					->addParameter('?string $condition = null')
+					->setReturnType('int')
+					->setBodyf(
+						"%s\n%s\n%s\n%s\n%s",
+						'$con = \'\';',
+						'if ($condition !== null) {',
+						'$con = Str\format(\'WHERE %s\', $condition);',
+						'}',
+						Str\format(
+							'return (int)$this->database->query(Str\format(\'SELECT COUNT(%s) as count FROM %%s %%s\', $this->getTableName(), $con))->fetchColumn();',
+							$this->harm->getPrimaryKey()->getName(),
+						),
+					),
+			);
 	}
 
 	private function writeExists(): void {
@@ -328,13 +333,12 @@ final class TableWriter {
 				->addParameter('?string $condition = null')
 				->setReturnType('bool')
 				->setBodyf(
-					"%s\n  %s\n%s\n  %s\n%s\n%s",
+					"%s\n%s\n%s\n%s\n%s",
+					'$con = \'\';',
 					'if ($condition !== null) {',
-					'$condition = Str\format(\'WHERE %s\', $condition);',
-					'} else {',
-					'$condition = \'\';',
+					'$con = Str\format(\'WHERE %s\', $condition);',
 					'}',
-					'return $this->database->exists(Str\format(\'SELECT 1 FROM %s %s\', $this->getTableName(), $condition));',
+					'return ((int)$this->database->query(Str\format(\'SELECT 1 FROM %s %s\', $this->getTableName(), $con))->fetchColumn()) > 0;',
 				)
 		);
 	}
@@ -422,7 +426,7 @@ final class TableWriter {
 		$this->class->addMethod(
 			$this->cg_factory
 				->codegenMethod('__construct')
-				->addParameter('private HaDb\DatabaseAdapterInterface $database')
+				->addParameter('private \PDO $database')
 				->setReturnType('void')
 				->setBody('$this->startDirtyTagging();')
 		);

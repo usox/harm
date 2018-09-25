@@ -18,13 +18,11 @@
 	],
 	"require": {
 		"hhvm": ">=3.28",
-		"usox/hadb": "^3",
 		"facebook/hack-codegen": "^3",
 		"hhvm/hsl": "^3.28"
 	},
 	"require-dev": {
-		"facebook/fbexpect": "^2",
-		"hhvm/hacktest": "^1.0",
+		"usox/hackmock": "dev-master",
 		"hhvm/hhast": "^3.28"
 	},
 	"autoload": {

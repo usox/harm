@@ -18,7 +18,7 @@ final class InterfaceWriter {
 
 	public function __construct(private HarmGenerator $harm): void {
 		$this->cg_factory = new HackCodegenFactory(
-			new HackCodegenConfig()
+			new HarmCodegenConfig()
 		);
 
 		$this->file = $this->cg_factory
