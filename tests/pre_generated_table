@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<3bbbfccccdd3cc82889144a2e1a5f9d8>>
+ * @generated SignedSource<<6eff66fd4ae824ed0040c64dd4d68c03>>
  */
 namespace Test\ORM;
 use namespace Usox\HaDb;
@@ -170,7 +170,7 @@ final class Sample
     if ($addendum !== null) $query .= ' '.$addendum;
     $query_result = $this->database->query($query);
     $results = Vector{};
-    while ($result = $this->database->getNextResult($query_result)) {
+    while ($result = $query_result->fetch(\PDO::FETCH_ASSOC)) {
     	$obj = new self($this->database);
     	$obj->loadDataByDatabaseResult($result);
     	$results->add($obj);

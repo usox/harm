@@ -266,7 +266,7 @@ final class TableWriter {
 					'if ($addendum !== null) $query .= \' \'.$addendum;',
 					'$query_result = $this->database->query($query);',
 					'$results = Vector{};',
-					'while ($result = $this->database->getNextResult($query_result)) {',
+					'while ($result = $query_result->fetch(\PDO::FETCH_ASSOC)) {',
 					'$obj = new self($this->database);',
 					'$obj->loadDataByDatabaseResult($result);',
 					'$results->add($obj);',
