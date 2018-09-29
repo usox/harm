@@ -18,6 +18,7 @@
 	],
 	"require": {
 		"hhvm": ">=3.28",
+		"ext-pdo": "*",
 		"facebook/hack-codegen": "^3",
 		"hhvm/hsl": "^3.28"
 	},
