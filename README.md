@@ -3,12 +3,6 @@
 HaRM - Hack Relation Mapper
 ===========================
 
-Warning
--------
-
-This library is currently under heavy development and should only be used for
-demonstration purposes.
-
 Goal
 ----
 
@@ -22,5 +16,6 @@ Usage
 boilerplate).
 - Generate interface `./bin/harmgen interface <path_to_your_harm_file> > MyTableInterface.hh`
 - Generate table `./bin/harmgen table <path_to_your_harm_file> > MyTable.hh`
+- Use your existing PDO instance for the database connection
 
 See the generated interface for further information.
