@@ -18,7 +18,7 @@ final class HarmGenerator {
 
 	public string $table_name = '';
 
-	private vec<string> $allowed_types = vec['int', 'int2', 'float', 'text', 'timestamp', 'inet'];
+	private vec<string> $allowed_types = vec['int', 'int2', 'float', 'text', 'timestamp', 'inet', 'bool'];
 
 	public function __construct(private string $config_file_path): void {
 	}

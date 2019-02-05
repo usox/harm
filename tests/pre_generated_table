@@ -3,7 +3,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<cf539913f87fe02700047debc8456f27>>
+ * @generated SignedSource<<c73ba371fae9b856e4026ea6f2b1eb34>>
  */
 namespace Test\ORM;
 use namespace HH\Lib\{C, Str, Vec};
@@ -25,6 +25,7 @@ final class Sample
     private string $text_field = '';
     private int $date_field = 0;
     private string $remote_addr_field = '';
+    private bool $bool_field = false;
 
     public function __construct(private \PDO $database): void {
         $this->startDirtyTagging();
@@ -44,6 +45,7 @@ final class Sample
         $this->setTextField((string) $data['text_field']);
         $this->setDateField((int) \strtotime($data['date_field']));
         $this->setRemoteAddrField((string) $data['remote_addr_field']);
+        $this->setBoolField((bool) $data['bool_field']);
 
         $this->startDirtyTagging();
     }
@@ -114,6 +116,15 @@ final class Sample
         $this->remote_addr_field = $value;
     }
 
+    public function getBoolField(): bool {
+        return $this->bool_field;
+    }
+
+    public function setBoolField(bool $value): void {
+        $this->tagDirty('bool_field');
+        $this->bool_field = $value;
+    }
+
     public function delete(): void {
         $this->database->query('DELETE FROM sample WHERE id = '.$this->getId());
     }
@@ -151,7 +162,7 @@ final class Sample
         ?string $order = null,
         ?string $addendum = null,
     ): vec<SampleInterface> {
-        $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field FROM sample';
+        $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field,bool_field FROM sample';
         if ($condition !== null) { $query .= ' WHERE '.$condition; }
         if ($order !== null) { $query .= ' ORDER BY '.$order; }
         if ($addendum !== null) { $query .= ' '.$addendum; }
@@ -166,7 +177,7 @@ final class Sample
     }
 
     public function getById(int $id): ?SampleInterface {
-        $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field FROM sample WHERE id = '.$id;
+        $query = 'SELECT id,integer_field,int2_field,float_field,text_field,date_field,remote_addr_field,bool_field FROM sample WHERE id = '.$id;
         $object = new self($this->database);
         $data = $this->database->query($query)->fetch(\PDO::FETCH_ASSOC);
         if ($data === false) {
@@ -200,6 +211,9 @@ final class Sample
         if ($this->isDirty('remote_addr_field')) {
         	$attributes['remote_addr_field'] = $this->remote_addr_field === null ? 'null' : $this->database->quote($this->remote_addr_field);
         }
+        if ($this->isDirty('bool_field')) {
+        	$attributes['bool_field'] = $this->bool_field === null ? 'null' : (bool) $this->bool_field;
+        }
 
         return $attributes;
     }
@@ -227,7 +241,7 @@ final class Sample
     }
 
     private function startDirtyTagging(): void {
-        $this->dirty = dict['integer_field' => false,'int2_field' => false,'float_field' => false,'text_field' => false,'date_field' => false,'remote_addr_field' => false,];
+        $this->dirty = dict['integer_field' => false,'int2_field' => false,'float_field' => false,'text_field' => false,'date_field' => false,'remote_addr_field' => false,'bool_field' => false,];
     }
 
     private function tagDirty(string $attribute): void {

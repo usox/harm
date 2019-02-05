@@ -3,7 +3,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<3b1a849363046db2fc3190511f0cfdea>>
+ * @generated SignedSource<<6aab948cc593eb46e29c84ebf1a8e2f1>>
  */
 namespace Test\ORM;
 
@@ -64,4 +64,8 @@ interface SampleInterface {
     public function getRemoteAddrField(): string;
 
     public function setRemoteAddrField(string $value): void;
+
+    public function getBoolField(): bool;
+
+    public function setBoolField(bool $value): void;
 }

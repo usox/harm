@@ -9,3 +9,4 @@ attribute=float_field:float
 attribute=text_field:text
 attribute=date_field:timestamp
 attribute=remote_addr_field:inet
+attribute=bool_field:bool

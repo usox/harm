@@ -31,6 +31,9 @@ final class DbAttribute {
 			case 'float':
 				$member_var->setLiteralValue('0.00');
 				return;
+			case 'bool':
+				$member_var->setValue(false);
+				return;				
 			case 'text':
 			case 'numeric':
 			default:
@@ -48,6 +51,8 @@ final class DbAttribute {
 				return '(string) '.$attribute;
 			case 'timestamp':
 				return '$this->database->quote((string) \date(\DATE_ATOM, '.$attribute.'))';
+			case 'bool':
+				return sprintf('(bool) %s', $attribute);				
 			default:
 				return '$this->database->quote('.$attribute.')';
 		}
@@ -61,6 +66,8 @@ final class DbAttribute {
 				return 'int';
 			case 'float':
 				return 'float';
+			case 'bool':
+				return 'bool';					
 			default:
 				return 'string';
 		}
