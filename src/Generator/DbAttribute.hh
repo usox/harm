@@ -2,6 +2,7 @@
 namespace Usox\HaRm\Generator;
 
 use namespace Facebook\HackCodegen as codegen;
+use namespace HH\Lib\Str;
 
 final class DbAttribute {
 
@@ -26,18 +27,33 @@ final class DbAttribute {
 			case 'int':
 			case 'int2':
 			case 'timestamp':
-				$member_var->setValue(0);
+				$member_var->setValue(
+					0,
+					codegen\HackBuilderValues::export()
+				);
 				return;
 			case 'float':
-				$member_var->setLiteralValue('0.00');
+				$lambda = function (codegen\IHackCodegenConfig $config, float $value): string {
+					return \number_format($value, 1);
+				};
+				$member_var->setValue(
+					0.0,
+					codegen\HackBuilderValues::lambda($lambda)
+				);
 				return;
 			case 'bool':
-				$member_var->setValue(false);
+				$member_var->setValue(
+					false,
+					codegen\HackBuilderValues::export()
+				);
 				return;				
 			case 'text':
 			case 'numeric':
 			default:
-				$member_var->setValue('');
+				$member_var->setValue(
+					'',
+					codegen\HackBuilderValues::export()
+				);
 				return;
 		}
 	}
@@ -52,7 +68,7 @@ final class DbAttribute {
 			case 'timestamp':
 				return '$this->database->quote((string) \date(\DATE_ATOM, '.$attribute.'))';
 			case 'bool':
-				return sprintf('(bool) %s', $attribute);				
+				return Str\format('(bool) %s', $attribute);
 			default:
 				return '$this->database->quote('.$attribute.')';
 		}

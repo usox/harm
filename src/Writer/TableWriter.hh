@@ -7,6 +7,7 @@ use type Usox\HaRm\Generator\DbAttribute;
 use type Facebook\HackCodegen\HackCodegenFactory;
 use type Facebook\HackCodegen\CodegenFile;
 use type Facebook\HackCodegen\CodegenClass;
+use type Facebook\HackCodegen\HackBuilderValues;
 
 final class TableWriter {
 
@@ -39,25 +40,48 @@ final class TableWriter {
 					Str\format('%sInterface', $this->harm->getClassName())
 				)
 			)
-			->addConst('TABLE_NAME', $this->harm->getTableName())
-			->addConst('SEQUENCE_NAME', $this->harm->getSequenceName())
+			->addConstant(
+				$this->cg_factory
+				->codegenClassConstant('TABLE_NAME')
+				->setValue(
+					$this->harm->getTableName(),
+					HackBuilderValues::export()
+				)
+			)
+			->addConstant(
+				$this->cg_factory
+				->codegenClassConstant('SEQUENCE_NAME')
+				->setValue(
+					$this->harm->getSequenceName(),
+					HackBuilderValues::export()
+				)
+			)
 			->addProperty(
 				$this->cg_factory
 					->codegenProperty($this->harm->getPrimaryKey()->getName())
 					->setType('int')
-					->setValue(0)
+					->setValue(
+						0,
+						HackBuilderValues::export()
+					)
 			)
 			->addProperty(
 				$this->cg_factory
 					->codegenProperty('data_loaded')
 					->setType('bool')
-					->setValue(false)
+					->setValue(
+						false,
+						HackBuilderValues::export()
+					)
 			)
 			->addProperty(
 				$this->cg_factory
 					->codegenProperty('modified')
 					->setType('bool')
-					->setValue(false)
+					->setValue(
+						false,
+						HackBuilderValues::export()
+					)
 			)
 			->addProperty(
 				$this->cg_factory
@@ -312,7 +336,7 @@ final class TableWriter {
 					->addParameter('?string $condition = null')
 					->setReturnType('int')
 					->setBodyf(
-						"%s\n%s\n%s\n%s\n%s",
+						"%s\n%s\n\t%s\n%s\n%s",
 						'$con = \'\';',
 						'if ($condition !== null) {',
 						'$con = Str\format(\'WHERE %s\', $condition);',
@@ -332,7 +356,7 @@ final class TableWriter {
 				->addParameter('?string $condition = null')
 				->setReturnType('bool')
 				->setBodyf(
-					"%s\n%s\n%s\n%s\n%s",
+					"%s\n%s\n\t%s\n%s\n%s",
 					'$con = \'\';',
 					'if ($condition !== null) {',
 					'$con = Str\format(\'WHERE %s\', $condition);',
