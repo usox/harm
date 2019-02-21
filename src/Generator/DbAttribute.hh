@@ -92,7 +92,7 @@ final class DbAttribute {
 	public function getReadCast(string $attribute): string {
 		switch ($this->type) {
 		case 'timestamp':
-			return '\strtotime('.$attribute.')';
+			return '\strtotime((string)'.$attribute.')';
 		default:
 			return $attribute;
 		}

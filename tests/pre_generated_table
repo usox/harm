@@ -3,7 +3,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<233e4c4be33fa395886570e346297581>>
+ * @generated SignedSource<<8f9e9b7bf60b2c4f67746f1db3aae5c4>>
  */
 namespace Test\ORM;
 use namespace HH\Lib\{C, Str, Vec};
@@ -43,7 +43,7 @@ final class Sample
 		$this->setInt2Field((int) $data['int2_field']);
 		$this->setFloatField((float) $data['float_field']);
 		$this->setTextField((string) $data['text_field']);
-		$this->setDateField((int) \strtotime($data['date_field']));
+		$this->setDateField((int) \strtotime((string)$data['date_field']));
 		$this->setRemoteAddrField((string) $data['remote_addr_field']);
 		$this->setBoolField((bool) $data['bool_field']);
 
