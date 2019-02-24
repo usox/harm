@@ -1,4 +1,3 @@
-<?hh // strict
 namespace Usox\HaRm\Writer;
 
 use namespace HH\Lib\Str;
@@ -22,10 +21,10 @@ final class InterfaceWriter {
 
 		$this->file = $this->cg_factory
 			->codegenFile(
-				Str\format('%sInterface.hh', $this->harm->getClassName())
+				Str\format('%sInterface.hack', $this->harm->getClassName())
 			)
 			->setDoClobber(true)
-			->setFileType(CodegenFileType::HACK_STRICT)
+			->setFileType(CodegenFileType::DOT_HACK)
 			->setNamespace(
 				$this->harm->getNamespaceName()
 			);

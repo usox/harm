@@ -1,5 +1,3 @@
-<?hh // strict
-
 namespace Usox\HaRm\Writer;
 
 use namespace Facebook\HackCodegen;

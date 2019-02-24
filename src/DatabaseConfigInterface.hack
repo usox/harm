@@ -1,5 +1,3 @@
-<?hh // strict
-
 namespace Usox\HaRm;
 
 interface DatabaseConfigInterface {

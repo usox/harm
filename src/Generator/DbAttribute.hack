@@ -1,4 +1,3 @@
-<?hh // strict
 namespace Usox\HaRm\Generator;
 
 use namespace Facebook\HackCodegen as codegen;

@@ -1,4 +1,3 @@
-<?hh // strict
 namespace Usox\HaRm\Generator;
 
 use namespace HH\Lib\{C, Str};

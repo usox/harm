@@ -1,4 +1,3 @@
-<?hh // strict
 namespace Usox\HaRm\Writer;
 
 use namespace HH\Lib\{Str, Vec};
@@ -6,6 +5,7 @@ use type Usox\HaRm\Generator\HarmGenerator;
 use type Usox\HaRm\Generator\DbAttribute;
 use type Facebook\HackCodegen\HackCodegenFactory;
 use type Facebook\HackCodegen\CodegenFile;
+use type Facebook\HackCodegen\CodegenFileType;
 use type Facebook\HackCodegen\CodegenClass;
 use type Facebook\HackCodegen\HackBuilderValues;
 
@@ -23,8 +23,9 @@ final class TableWriter {
 		
 		$this->file = $this->cg_factory
 			->codegenFile(
-				Str\format('%s.hh', $this->harm->getClassName())
+				Str\format('%s.hack', $this->harm->getClassName())
 			)
+			->setFileType(CodegenFileType::DOT_HACK)
 			->setNamespace($this->harm->getNamespaceName())
 			->useNamespace('HH\Lib\{C, Str, Vec}')
 			->setDoClobber(true);
