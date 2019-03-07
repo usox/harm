@@ -1,0 +1,6 @@
+class=Sample
+table=sample
+namespace=Test\ORM
+key=id
+
+attribute=id:int

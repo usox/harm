@@ -69,6 +69,16 @@ final class HarmGenerator {
 					);
 			}
 		}
+
+		$primary_key_name = $this->getPrimaryKey()->getName();
+
+		foreach ($this->attributes as $attribute) {
+			invariant(
+				$attribute->getName() !== $primary_key_name,
+				'Can not use `%s` as attribute name. It is already used as the primary key',
+				$primary_key_name
+			);
+		}
 	}
 
 	public function writeTable(): void {

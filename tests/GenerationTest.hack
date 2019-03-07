@@ -29,4 +29,17 @@ class GenerationTest extends \Facebook\HackTest\HackTest {
 		expect($result)
 			->toBeSame(\file_get_contents('tests/fixtures/pre_generated_interface'));
 	}
+
+	public function testGenerationFailsWithDuplicatedAttributes(): void {
+		\ob_start();
+
+		\system('bin/harmgen interface tests/fixtures/sample_with_duplicated_names.harm');
+
+		$result = \ob_get_contents();
+
+		\ob_end_clean();
+
+		expect($result)
+			->toMatchRegExp('/Can not use `id` as attribute name. It is already used as the primary key/');
+	}
 }
