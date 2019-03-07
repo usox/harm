@@ -2,6 +2,7 @@
 namespace Usox\HaRm\Generator;
 
 use namespace Facebook\HackCodegen as codegen;
+use namespace HH\Lib\Str;
 
 final class DbAttribute {
 
@@ -52,7 +53,7 @@ final class DbAttribute {
 			case 'timestamp':
 				return '$this->database->quote((string) \date(\DATE_ATOM, '.$attribute.'))';
 			case 'bool':
-				return sprintf('(bool) %s', $attribute);				
+				return Str\format('(%s === true ? \'true\' : \'false\')', $attribute);
 			default:
 				return '$this->database->quote('.$attribute.')';
 		}
