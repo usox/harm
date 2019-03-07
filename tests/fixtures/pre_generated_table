@@ -2,7 +2,7 @@
 /**
  * This file is generated. Do not modify it manually!
  *
- * @generated SignedSource<<3950250e326ad895ed1f26f8f16b5df5>>
+ * @generated SignedSource<<a5e48510cd3f1cf10dd63bb36e089315>>
  */
 namespace Test\ORM;
 use namespace HH\Lib\{C, Str, Vec};
@@ -211,7 +211,7 @@ final class Sample
 			$attributes['remote_addr_field'] = $this->remote_addr_field === null ? 'null' : $this->database->quote($this->remote_addr_field);
 		}
 		if ($this->isDirty('bool_field')) {
-			$attributes['bool_field'] = $this->bool_field === null ? 'null' : (bool) $this->bool_field;
+			$attributes['bool_field'] = $this->bool_field === null ? 'null' : ($this->bool_field === true ? 'true' : 'false');
 		}
 
 		return $attributes;

@@ -67,7 +67,7 @@ final class DbAttribute {
 			case 'timestamp':
 				return '$this->database->quote((string) \date(\DATE_ATOM, '.$attribute.'))';
 			case 'bool':
-				return Str\format('(bool) %s', $attribute);
+				return Str\format('(%s === true ? \'true\' : \'false\')', $attribute);
 			default:
 				return '$this->database->quote('.$attribute.')';
 		}
